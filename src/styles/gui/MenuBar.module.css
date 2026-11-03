@@ -1,0 +1,96 @@
+/* ── Menu bar ── */
+.menuBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--gui-menu-h);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-4);
+  background: var(--gui-menu-bg);
+  backdrop-filter: blur(var(--gui-menu-blur));
+  -webkit-backdrop-filter: blur(var(--gui-menu-blur));
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--gui-font-ui);
+  font-size: 13px;
+  color: var(--gui-text-primary);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+.appName {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gui-text-primary);
+  letter-spacing: 0.01em;
+}
+
+.menus {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.menuItem {
+  background: none;
+  border: none;
+  color: var(--gui-text-secondary);
+  font-size: 13px;
+  font-family: var(--gui-font-ui);
+  cursor: pointer;
+  padding: 2px var(--sp-2);
+  border-radius: 4px;
+  transition: background var(--dur-fast) var(--ease-smooth),
+              color var(--dur-fast) var(--ease-smooth);
+  line-height: 1;
+}
+.menuItem:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--gui-text-primary);
+}
+
+.switchBtn {
+  background: rgba(78, 204, 163, 0.1);
+  border: 1px solid rgba(78, 204, 163, 0.3);
+  color: var(--gui-accent);
+  font-size: 12px;
+  font-family: var(--gui-font-ui);
+  cursor: pointer;
+  padding: 2px var(--sp-3);
+  border-radius: 4px;
+  transition: all var(--dur-fast) var(--ease-smooth);
+}
+.switchBtn:hover {
+  background: rgba(78, 204, 163, 0.2);
+  border-color: var(--gui-accent);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.clock {
+  font-size: 13px;
+  color: var(--gui-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.date {
+  font-size: 12px;
+  color: var(--gui-text-secondary);
+}
+
+@media (max-width: 767px) {
+  .menus { display: none; }
+  .date  { display: none; }
+}
+

@@ -1,0 +1,223 @@
+/* Terminal.module.css */
+
+/* ── Outer wrapper — fullscreen default: fills entire parent ── */
+.outerWrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Outer wrapper — windowed: centers the terminal box with padding ── */
+.outerWindowed {
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px;
+  background: var(--bg);     /* show page bg behind the floating window */
+  overflow: auto;
+}
+
+/* ── Terminal window — fullscreen default ── */
+.window {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-terminal);
+  overflow: hidden;
+}
+
+/* ── Terminal window — windowed: restores the floating frame ── */
+.windowWindowed {
+  max-width: 960px;
+  height: calc(100vh - 48px);   /* viewport minus the 2×24px padding */
+  border: 1px solid var(--border);
+  border-radius: var(--terminal-radius);
+  box-shadow:
+    0 0 0 1px var(--border-bright),
+    var(--glow-teal),
+    0 24px 64px rgba(0, 0, 0, 0.65);
+}
+
+
+/* ── Title bar ── */
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-chrome);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.chromeDots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotRed    { background: #ff5f57; }
+.dotYellow { background: #febc2e; }
+.dotGreen  { background: #28c840; }
+
+.chromeTitle {
+  flex: 1;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.switchBtn {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--text-dim);
+  background: none;
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.switchBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-dim);
+}
+.switchBtn:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* ── Mobile quick chips — shown only on small screens ── */
+.chips {
+  display: none;
+  gap: 6px;
+  padding: 6px 12px;
+  flex-wrap: wrap;
+  background: var(--bg-chrome);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--text-dim);
+  border-radius: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  min-height: 32px;
+  min-width: 44px;
+}
+.chip:hover,
+.chip:active {
+  background: rgba(78, 204, 163, 0.12);
+  color: var(--text-white);
+}
+.chip:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* ── Scrollable body — holds all output + the live prompt ── */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  /* Extra bottom padding so the prompt never sits flush against the edge */
+  padding-bottom: 24px;
+  cursor: text;
+}
+
+/* Each output line fades in */
+.line {
+  animation: fadeSlideIn 0.12s ease forwards;
+  margin-bottom: 4px;
+}
+
+/* ── Prompt line (echoed past commands + live input line) ── */
+.promptLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  /* No extra top margin — prompt sits naturally after the previous output */
+  margin-top: 2px;
+}
+
+/* Text echoed after a submitted command's prompt */
+.echoText {
+  color: var(--text-cmd);
+}
+
+/* Generic output block */
+.outputLine {
+  color: var(--text-white);
+  line-height: 1.65;
+  padding-left: 0;
+}
+
+/* ── Inline input element ── */
+.input {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  color: var(--text-cmd);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  /* Hide the native caret — we draw a block cursor instead */
+  caret-color: transparent;
+  /* Shrinks to content; width is set dynamically via inline style */
+  min-width: 0;
+}
+
+/* ── Block cursor — blinks right after the input text ── */
+.cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1em;
+  background: var(--text-primary);
+  opacity: 0.9;
+  animation: blink 1.2s step-end infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+  margin-left: 1px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+
+  .chips {
+    display: flex;
+  }
+
+  .body {
+    padding: 10px;
+    padding-bottom: 20px;
+  }
+
+  .input,
+  .echoText {
+    font-size: var(--font-size-sm);
+  }
+
+  .chromeTitle {
+    display: none;
+  }
+}

@@ -1,0 +1,161 @@
+/* ─── macOS-style Dock ──────────────────────────────────────────────────────
+
+   Apple design notes applied:
+   • Translucent glass material with backdrop-filter
+   • Light top-edge border = light catching the glass surface
+   • framer-motion spring magnification on hover
+   • Running dot under active apps
+   • Tooltip fades in above icon
+   • iconClip rounds PNG corners to hide black backgrounds
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.dockWrap {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+}
+
+.dock {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 10px 16px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 22px;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px 8px;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* ── Individual dock slot ── */
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  gap: 4px;
+}
+
+/*
+ * Outer box: framer-motion controls width/height via spring.
+ * Drop-shadow applied here so it renders OUTSIDE the rounded clip.
+ */
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Don't set explicit width/height — motion.div inline style does that */
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55))
+          drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
+  transition: filter 180ms ease;
+  flex-shrink: 0;
+}
+
+/*
+ * Inner clip: rounds the PNG to macOS icon shape.
+ * border-radius + overflow:hidden hides the black square backgrounds.
+ * width/height: 100% fills the motion.div parent — do NOT set a MotionValue
+ * here (MotionValues only work on motion.* elements, not plain divs).
+ */
+.iconClip {
+  width: 100%;
+  height: 100%;
+  border-radius: 22%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* The PNG image fills the clip box completely */
+.iconImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Hover: brighter shadow + CSS nudge (framer handles scale via spring) */
+.item:hover .iconBox {
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.65))
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45))
+          brightness(1.06);
+}
+.item:active .iconBox {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4)) brightness(0.95);
+  transition-duration: 80ms;
+}
+
+/* Running dot */
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transition: opacity 220ms;
+  margin-bottom: 2px;
+}
+.dotVisible { opacity: 1; }
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(28, 28, 30, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f2f2f7;
+  font-size: 12px;
+  font-family: var(--gui-font-ui, system-ui, sans-serif);
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 5px 12px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.item:hover .tooltip,
+.item:focus-visible .tooltip { opacity: 1; }
+
+/* Focus ring */
+.item:focus-visible .iconClip {
+  outline: 3px solid rgba(10, 132, 255, 0.9);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .iconBox { transition: none; }
+}
+
+@media (max-width: 767px) {
+  .dock { gap: 4px; padding: 8px 10px 6px; }
+  .dockWrap { bottom: 6px; }
+}

@@ -1,0 +1,1 @@
+const t="_panel_1d9ue_2",e="_section_1d9ue_14",n="_sectionTitle_1d9ue_16",_="_text_1d9ue_28",s="_tag_1d9ue_34",o="_link_1d9ue_46",c={panel:t,section:e,sectionTitle:n,text:_,tag:s,link:o};export{c as s};

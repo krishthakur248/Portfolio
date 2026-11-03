@@ -1,0 +1,8 @@
+/* CliMode.module.css — full screen, no padding, no centering */
+.container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+

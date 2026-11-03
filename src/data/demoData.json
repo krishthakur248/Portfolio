@@ -1,0 +1,172 @@
+{
+  "profile": {
+    "_id": "krish_thakur_001",
+    "name": "Krish Thakur",
+    "role": "Software Engineer",
+    "tagline": "MERN stack developer who likes building things that actually work.",
+    "bio": "CS Engineering student at Chitkara University. I build full-stack and ML-integrated projects. Strong with data structures, algorithms, and the MERN stack. CGPA 9.94/10.",
+    "phone": "+91 7018067797",
+    "email": "krishthakur248@gmail.com",
+    "location": "Himachal Pradesh, India",
+    "photo": "/img/Me.jpeg",
+    "resume_pdf": "/img/Resume.pdf",
+    "links": {
+      "github": "https://github.com/krishthakur248",
+      "linkedin": "https://linkedin.com/in/krish-thakur-/"
+    }
+  },
+
+  "socials": [
+    {
+      "_id": "social_github",
+      "label": "GitHub",
+      "url": "https://github.com/krishthakur248",
+      "icon": "Github"
+    },
+    {
+      "_id": "social_linkedin",
+      "label": "LinkedIn",
+      "url": "https://linkedin.com/in/krish-thakur-/",
+      "icon": "Linkedin"
+    },
+    {
+      "_id": "social_email",
+      "label": "Gmail",
+      "url": "https://mail.google.com/mail/?view=cm&fs=1&to=krishthakur248@gmail.com",
+      "icon": "Mail"
+    },
+    {
+      "_id": "social_leetcode",
+      "label": "LeetCode",
+      "url": "https://leetcode.com/krishthakur248",
+      "icon": "Code2"
+    }
+  ],
+
+  "gui": {
+    "wallpaper": "gradient",
+    "welcomeText": "Hey — glad you're here. Click around, open some windows, and see what I've been building. Everything works as you'd expect from a desktop.",
+    "menuBarName": "Krish Thakur"
+  },
+
+  "skills": [
+    {
+      "_id": "skill_001",
+      "category": "Languages",
+      "items": ["C", "C++", "Java", "Python", "JavaScript (ES6+)"]
+    },
+    {
+      "_id": "skill_002",
+      "category": "Frontend",
+      "items": ["React.js", "HTML5", "CSS3", "DOM Manipulation", "Responsive Web Design"]
+    },
+    {
+      "_id": "skill_003",
+      "category": "Backend",
+      "items": ["Node.js", "Express.js", "REST API Design & Integration"]
+    },
+    {
+      "_id": "skill_004",
+      "category": "Databases",
+      "items": ["MongoDB", "Basic SQL"]
+    },
+    {
+      "_id": "skill_005",
+      "category": "CS Fundamentals",
+      "items": ["Data Structures & Algorithms", "Object-Oriented Programming", "Operating Systems", "Computer Networks", "DBMS"]
+    },
+    {
+      "_id": "skill_006",
+      "category": "Tools & Platforms",
+      "items": ["Git", "GitHub", "Linux (Basic)", "Postman", "Domain & Hosting", "Docker", "Kubernetes (Basic)"]
+    }
+  ],
+
+  "projects": [
+    {
+      "_id": "proj_001",
+      "slug": "quick-pull",
+      "name": "Quick Pull",
+      "subtitle": "Real-Time Peer-to-Peer Ride-Sharing System",
+      "team": "Team of 4",
+      "role": "Lead Contributor",
+      "stack": ["JavaScript", "Node.js", "Express.js", "MongoDB", "Socket.IO", "OSRM", "H3", "Turf.js"],
+      "highlights": [
+        "MERN-based ride-sharing platform with JWT authentication and live ride tracking.",
+        "Route-aware matching and real-time ride updates via OSRM, H3, and Socket.IO."
+      ],
+      "github": "https://github.com/krishthakur248",
+      "live": "https://krishthakur248.github.io/QuickPull/"
+    },
+    {
+      "_id": "proj_002",
+      "slug": "skillxchange",
+      "name": "SkillXchange",
+      "subtitle": "Mutual Mentoring Learning Platform",
+      "team": "Team of 4",
+      "role": "Lead Contributor",
+      "stack": ["Node.js", "Express.js", "MongoDB", "JavaScript", "Jitsi Meet API"],
+      "highlights": [
+        "Full-stack skill exchange platform with authentication and skill matching.",
+        "Integrated Jitsi Meet API for mentoring sessions. Deployed on GitHub Pages and Render."
+      ],
+      "github": "https://github.com/krishthakur248",
+      "live": "https://krishthakur248.github.io/SkillXChange_Landing_Page/"
+    },
+    {
+      "_id": "proj_003",
+      "slug": "meshguard",
+      "name": "MeshGuard",
+      "subtitle": "Offline Disaster Rescue & Survivor Tracking App",
+      "team": "Solo",
+      "role": "Developer",
+      "stack": ["Kotlin", "Jetpack Compose", "Google Nearby Connections API", "Room", "Foreground Service", "osmdroid"],
+      "highlights": [
+        "Offline-first Android app that relays survivor distress packets phone-to-phone via a gossip mesh.",
+        "Survivor/Rescuer roles, background broadcasting, and a rescuer dashboard with an offline map."
+      ],
+      "github": "https://github.com/krishthakur248",
+      "live": null
+    }
+  ],
+
+  "experience": [],
+
+  "education": [
+    {
+      "_id": "edu_001",
+      "institution": "Chitkara University",
+      "location": "Himachal Pradesh, India",
+      "degree": "B.E. in Computer Science Engineering",
+      "period": "2024 – 2028 (Expected)",
+      "cgpa": "9.94 / 10"
+    }
+  ],
+
+  "achievements": [
+    {
+      "_id": "ach_001",
+      "title": "Problem Solving",
+      "detail": "Solved 600+ problems on LeetCode across data structures and algorithms."
+    },
+    {
+      "_id": "ach_002",
+      "title": "Academic Excellence",
+      "detail": "Scored 100/100 in the AI Masterclass exam covering ChatGPT, DeepSeek, and Metaverse at Chitkara University."
+    },
+    {
+      "_id": "ach_003",
+      "title": "HackIndia Hackathon",
+      "detail": "Competed among 100+ teams at Chitkara University, building a functional prototype under time constraints."
+    }
+  ],
+
+  "contact": {
+    "_id": "contact_001",
+    "email": "krishthakur248@gmail.com",
+    "phone": "+91 7018067797",
+    "github": "https://github.com/krishthakur248",
+    "linkedin": "https://linkedin.com/in/krish-thakur-/",
+    "location": "Himachal Pradesh, India"
+  }
+}

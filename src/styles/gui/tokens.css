@@ -1,0 +1,79 @@
+/* ============================================================
+   GUI Global Tokens
+   Design system: Dark OLED + glassmorphism + developer aesthetic
+   Typography: JetBrains Mono (headings) + IBM Plex Sans (body)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core palette */
+  --gui-bg:           #090c14;
+  --gui-surface:      rgba(15, 23, 42, 0.85);
+  --gui-surface-solid:#0f172a;
+  --gui-card:         rgba(20, 30, 55, 0.9);
+  --gui-border:       rgba(71, 85, 105, 0.4);
+  --gui-border-bright:rgba(100, 130, 180, 0.5);
+
+  /* Text */
+  --gui-text-primary:  #f1f5f9;
+  --gui-text-secondary:#94a3b8;
+  --gui-text-muted:    #64748b;
+  --gui-text-accent:   #4ecca3;
+
+  /* Accent */
+  --gui-accent:        #4ecca3;
+  --gui-accent-dim:    rgba(78, 204, 163, 0.15);
+  --gui-accent-glow:   0 0 20px rgba(78, 204, 163, 0.3);
+
+  /* Window chrome */
+  --gui-win-bg:        rgba(10, 14, 26, 0.92);
+  --gui-win-title-bg:  rgba(15, 22, 40, 0.95);
+  --gui-win-shadow:    0 32px 80px rgba(0, 0, 0, 0.7),
+                       0 8px 24px rgba(0, 0, 0, 0.5),
+                       inset 0 1px 0 rgba(255,255,255,0.06);
+  --gui-win-shadow-focus: 0 32px 80px rgba(0, 0, 0, 0.8),
+                          0 8px 24px rgba(78, 204, 163, 0.08),
+                          inset 0 1px 0 rgba(255,255,255,0.08);
+  --gui-win-radius:    12px;
+
+  /* Dock */
+  --gui-dock-bg:       rgba(10, 14, 26, 0.72);
+  --gui-dock-blur:     24px;
+  --gui-dock-border:   rgba(255, 255, 255, 0.08);
+
+  /* Menu bar */
+  --gui-menu-bg:       rgba(8, 11, 22, 0.88);
+  --gui-menu-blur:     20px;
+  --gui-menu-h:        28px;
+
+  /* Typography */
+  --gui-font-ui:       'IBM Plex Sans', system-ui, sans-serif;
+  --gui-font-mono:     'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing (8dp rhythm) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Motion */
+  --ease-spring:  cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:     120ms;
+  --dur-normal:   220ms;
+  --dur-slow:     360ms;
+}
+
+/* Scrollbar for GUI panels */
+.gui-scroll::-webkit-scrollbar { width: 5px; }
+.gui-scroll::-webkit-scrollbar-track { background: transparent; }
+.gui-scroll::-webkit-scrollbar-thumb {
+  background: var(--gui-border-bright);
+  border-radius: 3px;
+}
+

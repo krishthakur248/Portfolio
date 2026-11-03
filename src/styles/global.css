@@ -1,0 +1,153 @@
+/* ============================================================
+   GLOBAL CSS — Krish Thakur Portfolio
+   Theme: Dark Navy + Teal/Mint (classic hacker terminal)
+   ============================================================ */
+
+/* ── Design tokens ── */
+:root {
+  /* Core palette — "hacker terminal" */
+  --bg:           #0d1117;
+  --bg-terminal:  #0a0e1a;
+  --bg-chrome:    #111827;
+  --border:       #1e2d40;
+  --border-bright:#2a3f55;
+
+  /* Text */
+  --text-primary:  #4ecca3;   /* teal/mint — main terminal green */
+  --text-dim:      #2a8a6f;   /* dimmed teal for secondary info */
+  --text-muted:    #4a6373;   /* muted for prompts/metadata */
+  --text-white:    #e8f4f8;   /* near-white for body text */
+  --text-error:    #ff6b6b;   /* red for errors */
+  --text-warn:     #ffd93d;   /* yellow for warnings */
+  --text-link:     #79c0ff;   /* light blue for clickable links */
+  --text-cmd:      #c9d1d9;   /* light grey — what the user typed */
+  --text-orange:   #f97316;   /* accent for easter eggs / highlights */
+
+  /* Prompt */
+  --prompt-user:   #4ecca3;
+  --prompt-host:   #4ecca3;
+  --prompt-path:   #79c0ff;
+  --prompt-dollar: #e8f4f8;
+
+  /* Landing picker */
+  --card-hover:    rgba(78, 204, 163, 0.08);
+  --card-border:   rgba(78, 204, 163, 0.2);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Typography */
+  --font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --font-size-sm:  12px;
+  --font-size-md:  14px;
+  --font-size-lg:  16px;
+  --font-size-xl:  20px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 40px;
+
+  /* Terminal window */
+  --terminal-max-w: 960px;
+  --terminal-radius: 8px;
+
+  /* Glow effects */
+  --glow-teal: 0 0 12px rgba(78, 204, 163, 0.25);
+  --glow-teal-strong: 0 0 24px rgba(78, 204, 163, 0.4);
+  --glow-text: 0 0 8px rgba(78, 204, 163, 0.6);
+}
+
+/* ── Reset & base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--font-size-md);
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-mono);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  height: 100%;
+  overflow: hidden;          /* page itself never scrolls */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(78, 204, 163, 0.015) 2px,
+    rgba(78, 204, 163, 0.015) 4px
+  );
+}
+
+/* Root div must also fill the viewport */
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove default list styles */
+ul, ol { list-style: none; }
+
+/* Links */
+a {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--text-primary); }
+a:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-terminal); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Fade-in for terminal output lines */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Reduced motion — skip animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,71 @@
+/* WelcomeBanner.module.css
+ * Full-mode styles ONLY.
+ * Window mode uses inline styles in WelcomeBanner.jsx — nothing here affects it.
+ * ─────────────────────────────────────────────────────────────────────────────── */
+
+/* ── Full-mode banner row ── */
+.bannerFull {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;   /* left-aligned, matches prompt below */
+  gap: 56px;                     /* single equal gap between all three items */
+  padding: 32px 20px 0;          /* 32px top/bottom breathing room, 20px sides */
+  /* No max-width, no auto margins — full width of the terminal body */
+}
+
+/* ── Logo: must not stretch or grow ── */
+.logoFull {
+  flex: 0 0 auto;
+  white-space: pre;
+  line-height: 1.15;
+}
+
+.logoText {
+  display: block;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 13px;               /* original size — no scale-up */
+  font-family: var(--font-mono);
+}
+
+/* ── Identity card: photo + info as one unit ── */
+.identityFull {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+/* ── Photo frame ── */
+.photoFrame {
+  border: 1px solid var(--text-dim);
+  padding: 3px;
+  background: var(--bg-terminal);
+  box-shadow: var(--glow-teal);
+  flex-shrink: 0;
+}
+
+.photo {
+  display: block;
+  width: 150px;                  /* 150×150 as requested */
+  height: 150px;
+  object-fit: cover;
+  object-position: top;
+  filter: grayscale(100%) sepia(60%) hue-rotate(120deg) saturate(180%) brightness(0.85);
+}
+
+/* ── Info text block ── */
+.infoFull {
+  white-space: pre;
+  line-height: 1.9;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* ── Horizontal divider — sits at the root WelcomeBanner level (no banner padding),
+      so it naturally spans the same width as the prompt/welcome-text area below it. ── */
+.headerDivider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 28px 0;               /* 28px gap above (below banner) and below (before welcome text) */
+}

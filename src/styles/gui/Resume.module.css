@@ -1,0 +1,117 @@
+/* Resume app */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #0f121d;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--gui-win-title-bg, rgba(15, 22, 40, 0.95));
+  border-bottom: 1px solid var(--gui-border, rgba(71, 85, 105, 0.4));
+  font-family: var(--gui-font-ui);
+  flex-shrink: 0;
+  min-height: 50px;
+  z-index: 5;
+}
+
+.titleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gui-text-primary, #f1f5f9);
+}
+
+.subLabel {
+  font-size: 11px;
+  color: var(--gui-text-muted, #64748b);
+  font-family: var(--gui-font-mono);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.actions a {
+  margin: 0;
+}
+
+.downloadBtn {
+  background: var(--gui-accent, #4ecca3) !important;
+  color: #090c14 !important;
+  font-weight: 600;
+  border-color: var(--gui-accent, #4ecca3) !important;
+}
+
+.downloadBtn:hover {
+  background: #3ebf96 !important;
+  filter: brightness(1.1);
+}
+
+/*
+ * Scrollable viewport for the document.
+ * min-height: 0 ensures flex child allows vertical scrolling.
+ */
+.scrollArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.scrollArea::-webkit-scrollbar {
+  width: 7px;
+}
+.scrollArea::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+}
+.scrollArea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+.scrollArea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.paperWrapper {
+  width: 100%;
+  max-width: 820px;
+  display: flex;
+  justify-content: center;
+}
+
+/*
+ * Paper-style document rendering:
+ * Crisp natural width, with a paper-like sheet shadow.
+ * The user can smoothly scroll vertically down to read all sections.
+ */
+.paper {
+  width: 100%;
+  max-width: 820px;
+  height: auto;
+  border-radius: 6px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.65),
+    0 2px 10px rgba(0, 0, 0, 0.4);
+  background: #ffffff;
+  display: block;
+}

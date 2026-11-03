@@ -1,0 +1,64 @@
+/* Welcome note */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 28px;
+  height: 100%;
+  font-family: var(--gui-font-ui);
+  background: linear-gradient(
+    135deg,
+    rgba(78, 204, 163, 0.05) 0%,
+    rgba(99, 102, 241, 0.05) 100%
+  );
+}
+
+.emoji { font-size: 40px; margin-bottom: 12px; }
+
+.heading {
+  font-size: 22px;
+  font-family: var(--gui-font-mono);
+  font-weight: 700;
+  color: var(--gui-text-primary);
+  margin-bottom: 12px;
+}
+
+.body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gui-text-secondary);
+  max-width: 340px;
+  margin-bottom: 28px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint {
+  font-size: 11px;
+  font-family: var(--gui-font-mono);
+  color: var(--gui-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.closeBtn {
+  background: var(--gui-accent);
+  color: #0a0e1a;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 24px;
+  font-size: 14px;
+  font-family: var(--gui-font-ui);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 120ms, transform 120ms;
+}
+.closeBtn:hover { opacity: 0.88; transform: translateY(-1px); }
+.closeBtn:focus-visible { outline: 2px solid var(--gui-accent); outline-offset: 3px; }
+

@@ -1,0 +1,150 @@
+/* ── Window chrome ── */
+
+.windowWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--gui-win-radius);
+  overflow: hidden;
+  box-shadow: var(--gui-win-shadow);
+  border: 1px solid var(--gui-border);
+  background: var(--gui-win-bg);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  transition: box-shadow var(--dur-normal), border-color var(--dur-normal);
+}
+
+.windowWrap.focused {
+  box-shadow: var(--gui-win-shadow-focus);
+  border-color: rgba(100, 130, 180, 0.4);
+}
+
+/* ── Title bar (drag handle) ── */
+.titleBar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 var(--sp-3);
+  background: var(--gui-win-title-bg);
+  border-bottom: 1px solid var(--gui-border);
+  /* react-rnd uses this className as the drag target */
+  cursor: grab;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.titleBar:active { cursor: grabbing; }
+
+/* Unfocused windows have dimmer title bar */
+.windowWrap:not(.focused) .titleBar {
+  opacity: 0.75;
+}
+
+/* ── Traffic lights ── */
+.lights {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  margin-right: var(--sp-3);
+  cursor: default; /* cursor is normal over traffic lights, not grab */
+}
+
+.light {
+  position: relative;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: filter var(--dur-fast), opacity var(--dur-fast);
+}
+
+/*
+ * Invisible hit target: expands the clickable area to 25×25px
+ * WITHOUT changing the visual 13px dot size!
+ * Makes clicking relaxed and effortless — no pixel-hunting required.
+ */
+.light::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.light:hover  { filter: brightness(1.2); }
+.light:active { filter: brightness(0.85); }
+.light:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+
+/* Unfocused: muted traffic lights */
+.windowWrap:not(.focused) .light {
+  opacity: 0.45;
+}
+.windowWrap:not(.focused) .lights:hover .light {
+  opacity: 1;
+}
+
+.lightClose    { background: #ff5f57; }
+.lightMinimize { background: #ffbd2e; }
+.lightMaximize { background: #28c840; }
+
+/* Icons inside lights: only visible on hover */
+.lightClose svg,
+.lightMinimize svg,
+.lightMaximize svg {
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+  color: rgba(0, 0, 0, 0.5);
+  pointer-events: none; /* icons don't capture mouse events */
+}
+.lights:hover .light svg { opacity: 0.85; }
+
+/* ── Title text ── */
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-family: var(--gui-font-ui);
+  font-weight: 500;
+  color: var(--gui-text-secondary);
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.windowWrap.focused .title { color: var(--gui-text-primary); }
+
+/* ── App content body ── */
+.body {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+  outline: none;
+}
+
+/* ── Maximized state ── */
+.maximized {
+  border-radius: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* ── Mobile: windows go full-screen ── */
+@media (max-width: 767px) {
+  .windowWrap {
+    border-radius: 0;
+    border: none;
+  }
+  .titleBar { cursor: default; }
+}

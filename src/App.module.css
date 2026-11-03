@@ -1,0 +1,212 @@
+/* App.module.css — landing picker styles */
+
+/* ── Landing wrapper ── */
+.landing {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;                  /* fill #root */
+  height: 100%;
+  padding: 40px 20px;
+  overflow: hidden;         /* no page scroll */
+  text-align: center;
+}
+
+/* Ambient glow blobs behind the content */
+.blobLeft,
+.blobRight {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.12;
+}
+.blobLeft {
+  background: var(--text-primary);
+  top: -80px;
+  left: -120px;
+}
+.blobRight {
+  background: #2563eb;
+  bottom: -80px;
+  right: -120px;
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 36px;
+}
+
+.avatarWrap {
+  margin-bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.avatar {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 2.5px solid var(--text-primary);
+  box-shadow:
+    0 0 0 5px rgba(78, 204, 163, 0.12),
+    0 0 28px rgba(78, 204, 163, 0.3),
+    0 10px 22px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+  display: block;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 6px rgba(78, 204, 163, 0.22),
+    0 0 36px rgba(78, 204, 163, 0.48),
+    0 14px 28px rgba(0, 0, 0, 0.5);
+}
+
+.nameplate {
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.nameDim    { color: var(--text-muted); }
+.nameBright { color: var(--text-primary); font-weight: 600; }
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  /* Subtle text glow */
+  text-shadow: var(--glow-text);
+  margin-bottom: 8px;
+}
+
+.role {
+  font-size: var(--font-size-md);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ── "Pick how you want" prompt ── */
+.prompt {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Mode cards ── */
+.cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 220px;
+  padding: 24px 20px;
+  background: var(--bg-chrome);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-mono);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.card:hover,
+.cardActive {
+  background: var(--card-hover);
+  border-color: var(--text-primary);
+  box-shadow: var(--glow-teal);
+  transform: translateY(-2px);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+/* Muted variant for GUI (coming soon) */
+.cardDim {
+  border-color: var(--border);
+  opacity: 0.65;
+}
+.cardDim:hover,
+.cardDim.cardActive {
+  opacity: 1;
+  border-color: var(--text-dim);
+  box-shadow: none;
+}
+
+.cardIcon {
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.cardLabel {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.cardDesc {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.cardHint {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+.cardHintMuted {
+  color: var(--text-muted);
+}
+
+/* ── Footer links ── */
+.footer {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+.footer a {
+  color: var(--text-link);
+}
+.footer a:hover {
+  color: var(--text-primary);
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+  .card {
+    width: 100%;
+    max-width: 320px;
+  }
+}

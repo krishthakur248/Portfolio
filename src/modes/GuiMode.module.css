@@ -1,0 +1,64 @@
+/* GuiMode.module.css */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.card {
+  text-align: center;
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 48px 40px;
+  background: var(--bg-chrome);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--glow-teal);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--text-dim);
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: 16px;
+}
+
+.heading {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.sub {
+  color: var(--text-muted);
+  font-size: var(--font-size-md);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.backBtn {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--text-primary);
+  border-radius: 4px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.backBtn:hover {
+  background: rgba(78, 204, 163, 0.1);
+}
+.backBtn:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
