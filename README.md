@@ -6,7 +6,7 @@
 [![Zustand](https://img.shields.io/badge/State-Zustand%205-brown?style=for-the-badge)](https://github.com/pmndrs/zustand)
 [![Framer Motion](https://img.shields.io/badge/Motion-Framer%20Motion-ff0055?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 
-> A developer portfolio engineered with two distinct operational interfaces: an interactive **UNIX Terminal emulator (CLI)** and a **macOS Sonoma-inspired Desktop environment (GUI)**. Fully responsive, client-side rendered, and built with zero heavy UI component libraries.
+> A developer portfolio engineered with two distinct operational interfaces: an interactive **UNIX Terminal emulator (CLI)** and a polished, modern **Desktop environment (GUI)**. Fully responsive, client-side rendered, and built with zero heavy UI component libraries.
 
 🔗 **Live Deployment:** [https://krish-hghs.onrender.com/](https://krish-hghs.onrender.com/)
 
@@ -16,10 +16,10 @@
 
 Visitors choose their preferred way to browse upon entering:
 
-### 1. GUI Mode (macOS-Style Desktop Environment)
+### 1. GUI Mode (Interactive Desktop Environment)
 An authentic desktop windowing system built natively in React:
 - **Window Management**: Draggable, resizable, and stackable floating windows powered by `react-rnd`.
-- **macOS Window Chrome**: Authentic traffic light buttons (close, minimize, maximize) featuring expanded 25px hit-targets for effortless clicking without accidental window dragging.
+- **Window Controls**: Color-coded traffic light buttons (close, minimize, maximize) featuring expanded 25px hit-targets for effortless clicking without accidental window dragging.
 - **Glassmorphism & Aesthetics**: Dark OLED color palette, backdrop blur (`backdrop-filter: blur(32px)`), subtle specular borders, and high-resolution wallpaper.
 - **Interactive Dock**: Dock featuring custom icons, active app indicators, magnification, and 1-click window launching.
 - **Menu Bar**: Live system clock, system status, and 1-click switcher back to CLI mode.
@@ -109,7 +109,7 @@ Portfolio/
 │   │   ├── store/            # Zustand window manager store (useWindowStore.js)
 │   │   ├── Desktop.jsx       # Canvas containing icons, dock, and windows
 │   │   ├── Dock.jsx          # Interactive bottom dock
-│   │   ├── MenuBar.jsx       # macOS-style top system bar
+│   │   ├── MenuBar.jsx       # Top system status bar
 │   │   └── Window.jsx        # Floating window shell with traffic light controls
 │   ├── modes/                # Route mode wrappers (CliMode, GuiMode)
 │   ├── services/
