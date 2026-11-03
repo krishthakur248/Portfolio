@@ -1,6 +1,7 @@
 import React from 'react';
 import { Download, ExternalLink } from 'lucide-react';
 import { getProfileSync as getProfile } from '../../services/dataService.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 import styles from '../../styles/gui/AppPanel.module.css';
 import resumeStyles from '../../styles/gui/Resume.module.css';
 
@@ -8,6 +9,7 @@ export default function Resume() {
   const profile  = getProfile();
   const pdfSrc   = profile.resume_pdf || '/img/Resume.pdf';
   const imageSrc = '/img/ResumeImg.png';
+  const isMobile = useIsMobile();
 
   return (
     <div className={resumeStyles.wrap}>
@@ -19,13 +21,13 @@ export default function Resume() {
         </div>
 
         <div className={resumeStyles.actions}>
-          {/* Open Full Resume in Dedicated Browser Tab */}
+          {/* Open Full Vector PDF in Dedicated Browser Tab */}
           <a
-            href="/resume.html"
+            href={pdfSrc}
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             className={styles.link}
-            aria-label="Open full resume in dedicated browser tab"
+            aria-label="Open full vector resume in dedicated browser tab"
           >
             <ExternalLink size={14} aria-hidden="true" />
             <span>Open in Tab</span>
@@ -44,17 +46,29 @@ export default function Resume() {
         </div>
       </div>
 
-      {/* ── Scrollable Document Preview ── */}
-      <div className={resumeStyles.scrollArea}>
-        <div className={resumeStyles.paperWrapper}>
-          <img
-            src={imageSrc}
-            alt={`${profile.name} Resume`}
-            className={resumeStyles.paper}
-            loading="eager"
-          />
+      {/* ── Document View ── */}
+      {isMobile ? (
+        <div className={resumeStyles.scrollArea}>
+          <div className={resumeStyles.paperWrapper}>
+            <img
+              src={imageSrc}
+              alt={`${profile.name} Resume`}
+              className={resumeStyles.paper}
+              loading="eager"
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className={resumeStyles.viewerContainer}>
+          <div className={resumeStyles.pdfWrapper}>
+            <iframe
+              src={`${pdfSrc}#toolbar=0&navpanes=0&view=FitH`}
+              className={resumeStyles.pdfEmbed}
+              title={`${profile.name} Resume`}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
