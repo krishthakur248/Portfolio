@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { Rnd } from 'react-rnd';
 import { motion } from 'framer-motion';
 import { X, Minus, Maximize2 } from 'lucide-react';
@@ -6,7 +6,6 @@ import useWindowStore from './store/useWindowStore.js';
 import styles from '../styles/gui/Window.module.css';
 
 const MENU_H = 28;
-const DOCK_H = 88;
 
 /**
  * Window — wraps react-rnd (drag/resize) with macOS chrome (title bar, traffic lights).
@@ -35,11 +34,21 @@ export default function Window({ win, isFocused, children }) {
     }
   }, [isFocused]);
 
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const [viewport, setViewport] = React.useState(() => ({
+    vw: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    vh: typeof window !== 'undefined' ? window.innerHeight : 800,
+  }));
+
+  React.useEffect(() => {
+    function handleResize() {
+      setViewport({ vw: window.innerWidth, vh: window.innerHeight });
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const maxPos  = { x: 0, y: MENU_H };
-  const maxSize = { width: vw, height: vh - MENU_H - DOCK_H };
+  const maxSize = { width: viewport.vw, height: Math.max(300, viewport.vh - MENU_H) };
 
   const position = win.maximized ? maxPos  : win.position;
   const size     = win.maximized ? maxSize : win.size;
@@ -54,6 +63,7 @@ export default function Window({ win, isFocused, children }) {
   }
   function handleMaximize(e) {
     e.stopPropagation();
+    focusApp(win.id);
     toggleMaximize(win.id);
   }
 

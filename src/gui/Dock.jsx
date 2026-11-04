@@ -82,8 +82,15 @@ export default function Dock() {
     openWindows.filter((w) => !w.minimized).map((w) => w.appId)
   );
 
+  const hasMaximized = openWindows.some((w) => !w.minimized && w.maximized);
+
   return (
-    <div className={styles.dockWrap} role="toolbar" aria-label="Dock">
+    <div
+      className={`${styles.dockWrap} ${hasMaximized ? styles.hidden : ''}`}
+      role="toolbar"
+      aria-label="Dock"
+      aria-hidden={hasMaximized}
+    >
       <div className={styles.dock}>
 
         {/* App icons */}
