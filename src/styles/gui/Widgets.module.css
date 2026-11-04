@@ -475,11 +475,12 @@
 
 .smallCard {
   width: 163px;
-  height: 140px;
-  padding: 14px;
+  height: 124px;
+  padding: 14px 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 12px;
   cursor: pointer;
 }
 

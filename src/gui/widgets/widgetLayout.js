@@ -5,8 +5,8 @@
 
 export const WIDGET_DIMENSIONS = {
   calendar:   { width: 170, height: 170 },
-  dsaFocus:   { width: 163, height: 140 },
-  status:     { width: 163, height: 140 },
+  dsaFocus:   { width: 163, height: 124 },
+  status:     { width: 163, height: 124 },
   worldClock: { width: 340, height: 170 },
   weather:    { width: 340, height: 170 },
   spotlight:  { width: 540, height: 50 },
@@ -21,7 +21,7 @@ export const DEFAULT_WIDGET_POSITIONS = {
   status:     { x: 224, y: 490 },
   worldClock: { x: 232, y: 56 },
   weather:    { x: 48,  y: 296 },
-  spotlight:  { x: 552, y: 264 },
+  spotlight:  { x: 528, y: 232 },
 };
 
 /**
@@ -30,9 +30,9 @@ export const DEFAULT_WIDGET_POSITIONS = {
  */
 export function computeDefaultWidgetPositions(vw = 1440, vh = 900) {
   const spotlightW = 540;
-  let spotX = 552;
+  let spotX = 528;
   // If viewport width is narrower than spotlight starting boundary, keep it within screen bounds
-  if (vw < 552 + spotlightW + 20) {
+  if (vw < 528 + spotlightW + 20) {
     spotX = Math.max(48, vw - spotlightW - 20);
   }
 
@@ -42,7 +42,7 @@ export function computeDefaultWidgetPositions(vw = 1440, vh = 900) {
     status:     { x: 224, y: 490 },
     worldClock: { x: 232, y: 56 },
     weather:    { x: 48,  y: 296 },
-    spotlight:  { x: spotX, y: 264 },
+    spotlight:  { x: spotX, y: 232 },
   };
 }
 

@@ -23,7 +23,8 @@ export default function Desktop({ switchMode }) {
   const { openApp, openWindows, getFocusedId } = useWindowStore();
   const isMobile = useIsMobile();
   const desktopApps = getDesktopApps();
-  const appIds = desktopApps.map((a) => a.id);
+  // Desktop icons order: Welcome on top, Experience & Education in the end
+  const appIds = ['welcome', 'resume', 'contact', 'experience'];
 
   // Calculate dynamic collision-free icon positions
   const [iconPositions, setIconPositions] = useState(() => {
@@ -38,9 +39,9 @@ export default function Desktop({ switchMode }) {
     }
     return {
       welcome:    { x: 1200, y: 60 },
-      experience: { x: 1200, y: 190 },
-      resume:     { x: 1200, y: 320 },
-      contact:    { x: 1200, y: 450 },
+      resume:     { x: 1200, y: 190 },
+      contact:    { x: 1200, y: 320 },
+      experience: { x: 1200, y: 450 },
     };
   });
 
