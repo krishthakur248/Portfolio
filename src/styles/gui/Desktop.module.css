@@ -53,11 +53,61 @@
   left: 0;
   right: 0;
   bottom: 88px;
-  z-index: 10;
+  z-index: 5;
 }
 
 .deselect {
   position: absolute;
   inset: 0;
   z-index: 0;
+}
+
+/* Glass Desktop Context Menu */
+.contextMenu {
+  position: fixed;
+  z-index: 10000;
+  background: rgba(22, 28, 45, 0.88);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 190px;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: contextIn 0.12s ease-out forwards;
+}
+
+@keyframes contextIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.contextMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.contextMenuItem:hover {
+  background: rgba(78, 204, 163, 0.2);
+  color: #5eead4;
+}
+
+.contextDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 4px 6px;
 }

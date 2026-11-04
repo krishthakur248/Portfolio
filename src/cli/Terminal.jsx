@@ -37,6 +37,17 @@ export default function Terminal({ switchMode, embedded = false, isWindowFocused
     inputRef.current?.focus();
   }, []);
 
+  // Listen for command dispatch from Spotlight search
+  useEffect(() => {
+    function handleRunCmd(e) {
+      if (e.detail?.command) {
+        setTimeout(() => submitCommand(e.detail.command), 100);
+      }
+    }
+    window.addEventListener('portfolio:runTerminalCommand', handleRunCmd);
+    return () => window.removeEventListener('portfolio:runTerminalCommand', handleRunCmd);
+  }, [submitCommand]);
+
   // When embedded inside a GUI window and that window becomes focused, re-focus the input
   useEffect(() => {
     if (isWindowFocused) {

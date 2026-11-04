@@ -21,6 +21,7 @@ export const getAchievements = () => resolved(data.achievements ?? []);
 export const getContact      = () => resolved(data.contact);
 export const getSocials      = () => resolved(data.socials      ?? []);
 export const getGuiConfig    = () => resolved(data.gui          ?? {});
+export const getWidgetsData  = () => resolved(data.widgets      ?? {});
 
 export function getProject(id) {
   const project = data.projects?.find((p) => p._id === id || p.slug === id);
@@ -41,3 +42,4 @@ export const getAchievementsSync = () => data.achievements ?? [];
 export const getContactSync      = () => data.contact;
 export const getSocialsSync      = () => data.socials      ?? [];
 export const getGuiConfigSync    = () => data.gui          ?? {};
+export const getWidgetsDataSync  = () => data.widgets      ?? {};

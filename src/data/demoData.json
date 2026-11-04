@@ -49,6 +49,37 @@
     "menuBarName": "Krish Thakur"
   },
 
+  "widgets": {
+    "weather": {
+      "location": "Himachal Pradesh",
+      "temperature": "18°",
+      "condition": "Partly Cloudy",
+      "high": "22°",
+      "low": "11°",
+      "hourly": [
+        { "time": "10 AM", "temp": "18°", "icon": "CloudSun" },
+        { "time": "11 AM", "temp": "19°", "icon": "Sun" },
+        { "time": "12 PM", "temp": "21°", "icon": "Sun" },
+        { "time": "1 PM",  "temp": "22°", "icon": "CloudSun" },
+        { "time": "2 PM",  "temp": "20°", "icon": "CloudRain" }
+      ]
+    },
+    "dsaFocus": {
+      "badge": "DSA FOCUS",
+      "stat": "600+",
+      "label": "LeetCode Solved",
+      "sub": "Arrays · Trees · Graphs",
+      "url": "https://leetcode.com/krishthakur248"
+    },
+    "status": {
+      "badge": "STATUS",
+      "headline": "Open to Roles",
+      "label": "Full-stack / Android",
+      "sub": "Chitkara · CGPA 9.94",
+      "appTarget": "contact"
+    }
+  },
+
   "skills": [
     {
       "_id": "skill_001",

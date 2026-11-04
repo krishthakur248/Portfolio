@@ -16,6 +16,16 @@ export default function Projects() {
   const projects = getProjects();
   const [selected, setSelected] = useState(null);
 
+  React.useEffect(() => {
+    function handleOpenProject(e) {
+      if (e.detail?.projectId) {
+        setSelected(e.detail.projectId);
+      }
+    }
+    window.addEventListener('portfolio:openProject', handleOpenProject);
+    return () => window.removeEventListener('portfolio:openProject', handleOpenProject);
+  }, []);
+
   if (selected) {
     const p = projects.find((x) => x._id === selected);
     return (
