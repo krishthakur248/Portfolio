@@ -14,6 +14,7 @@ import {
   Command,
   Award,
   Globe,
+  X,
 } from 'lucide-react';
 import useWindowStore from '../store/useWindowStore.js';
 import {
@@ -24,6 +25,8 @@ import {
   getSocialsSync,
 } from '../../services/dataService.js';
 import styles from '../../styles/gui/Widgets.module.css';
+
+const CATEGORIES = ['all', 'apps', 'projects', 'skills', 'experience', 'commands'];
 
 const APPS_LIST = [
   { id: 'about',      title: 'About Krish',            category: 'Apps', desc: 'Background, education, and technical profile',   icon: User },
@@ -202,7 +205,7 @@ export default function SpotlightBar({ switchMode }) {
     return list;
   }, [projects, skillGroups, education, achievements, socials]);
 
-  // Suggestions shown when query is empty
+  // Suggestions shown when query is empty and category is 'all'
   const suggestions = useMemo(() => {
     return [
       APPS_LIST.find((a) => a.id === 'projects'),
@@ -223,27 +226,78 @@ export default function SpotlightBar({ switchMode }) {
   // Filter items based on active query & category
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return suggestions;
 
-    let results = allItems;
+    // Specific category selected (Direct click filter)
     if (activeCategory !== 'all') {
-      results = results.filter((i) => i.category.toLowerCase() === activeCategory);
+      let catItems = allItems.filter(
+        (i) => i.category.toLowerCase() === activeCategory.toLowerCase()
+      );
+
+      // If user typed a search query, filter within this category
+      if (q) {
+        catItems = catItems.filter((i) => {
+          const matchTitle = i.title.toLowerCase().includes(q);
+          const matchDesc = i.desc?.toLowerCase().includes(q);
+          const matchKey = i.keywords?.toLowerCase().includes(q);
+          const matchCmd = i.command?.toLowerCase().includes(q);
+          return matchTitle || matchDesc || matchKey || matchCmd;
+        });
+      }
+
+      return catItems;
     }
 
-    results = results.filter((i) => {
-      const matchTitle = i.title.toLowerCase().includes(q);
-      const matchDesc = i.desc?.toLowerCase().includes(q);
-      const matchCat = i.category?.toLowerCase().includes(q);
-      const matchKey = i.keywords?.toLowerCase().includes(q);
-      return matchTitle || matchDesc || matchCat || matchKey;
-    });
+    // "All" selected
+    if (!q) {
+      return suggestions;
+    }
 
-    return results.slice(0, 8);
+    return allItems
+      .filter((i) => {
+        const matchTitle = i.title.toLowerCase().includes(q);
+        const matchDesc = i.desc?.toLowerCase().includes(q);
+        const matchCat = i.category?.toLowerCase().includes(q);
+        const matchKey = i.keywords?.toLowerCase().includes(q);
+        const matchCmd = i.command?.toLowerCase().includes(q);
+        return matchTitle || matchDesc || matchCat || matchKey || matchCmd;
+      })
+      .slice(0, 10);
   }, [allItems, query, activeCategory, suggestions]);
+
+  // Dynamic header text based on active category & query
+  const headerText = useMemo(() => {
+    const q = query.trim();
+    if (q) {
+      if (activeCategory === 'all') {
+        return `Search Results (${filteredItems.length})`;
+      }
+      return `${activeCategory.toUpperCase()} Results (${filteredItems.length})`;
+    }
+
+    switch (activeCategory) {
+      case 'apps':
+        return `Applications (${filteredItems.length})`;
+      case 'projects':
+        return `Featured Projects (${filteredItems.length})`;
+      case 'skills':
+        return `Technical Skills (${filteredItems.length})`;
+      case 'experience':
+        return `Experience & Education (${filteredItems.length})`;
+      case 'commands':
+        return `Shell Commands (${filteredItems.length})`;
+      default:
+        return 'Suggested Shortcuts';
+    }
+  }, [query, activeCategory, filteredItems.length]);
 
   useEffect(() => {
     setSelectedIndex(0);
-  }, [filteredItems]);
+  }, [filteredItems, activeCategory]);
+
+  function handleCategoryChange(cat) {
+    setActiveCategory((prev) => (prev === cat && cat !== 'all' ? 'all' : cat));
+    setSelectedIndex(0);
+  }
 
   function handleSelect(item) {
     if (!item) return;
@@ -282,12 +336,24 @@ export default function SpotlightBar({ switchMode }) {
       if (filteredItems[selectedIndex]) {
         handleSelect(filteredItems[selectedIndex]);
       }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      const currentIdx = CATEGORIES.indexOf(activeCategory);
+      const nextIdx = e.shiftKey
+        ? (currentIdx - 1 + CATEGORIES.length) % CATEGORIES.length
+        : (currentIdx + 1) % CATEGORIES.length;
+      handleCategoryChange(CATEGORIES[nextIdx]);
     } else if (e.key === 'Escape') {
       e.preventDefault();
       setIsOpen(false);
       setQuery('');
     }
   }
+
+  const searchPlaceholder =
+    activeCategory !== 'all'
+      ? `Search in ${activeCategory}...`
+      : 'Spotlight Search';
 
   return (
     <div className={styles.spotlightArea} ref={containerRef}>
@@ -308,7 +374,7 @@ export default function SpotlightBar({ switchMode }) {
           ref={inputRef}
           type="text"
           className={styles.searchPillInput}
-          placeholder="Spotlight Search"
+          placeholder={searchPlaceholder}
           value={query}
           aria-label="Spotlight search across apps, projects, and skills"
           onChange={(e) => {
@@ -318,12 +384,29 @@ export default function SpotlightBar({ switchMode }) {
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
         />
+
+        {query && (
+          <button
+            type="button"
+            className={styles.searchClearBtn}
+            aria-label="Clear search query"
+            title="Clear search"
+            onClick={(e) => {
+              e.stopPropagation();
+              setQuery('');
+              inputRef.current?.focus();
+            }}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        )}
+
         <span className={styles.searchShortcutHint} title="Toggle Spotlight with Cmd+K or Ctrl+K">
           ⌘K
         </span>
       </div>
 
-      {/* ── Quick Action Glass Buttons (All 4 mapped to real apps) ── */}
+      {/* ── Quick Action Glass Buttons ── */}
       <div className={styles.quickActions} role="toolbar" aria-label="Quick launch bar">
         <button
           type="button"
@@ -374,28 +457,56 @@ export default function SpotlightBar({ switchMode }) {
           role="listbox"
           aria-label="Search results"
         >
-          {/* Category filter tabs */}
+          {/* Direct Category Filter Tabs */}
           <div className={styles.spotlightFilterRow}>
-            {['all', 'apps', 'projects', 'skills', 'experience', 'commands'].map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`${styles.filterChip} ${activeCategory === cat ? styles.filterChipActive : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  className={`${styles.filterChip} ${isActive ? styles.filterChipActive : ''}`}
+                  onMouseDown={(e) => {
+                    // Prevent search input from losing focus
+                    e.preventDefault();
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCategoryChange(cat);
+                  }}
+                  aria-pressed={isActive}
+                >
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </button>
+              );
+            })}
           </div>
 
-          {!query.trim() && (
-            <div className={styles.suggestionsHeader}>Suggested Shortcuts</div>
-          )}
+          {/* Section Header */}
+          <div className={styles.suggestionsHeader}>{headerText}</div>
 
           {/* Results list */}
           <div className={styles.spotlightResults}>
             {filteredItems.length === 0 ? (
-              <div className={styles.emptyState}>No results found for "{query}"</div>
+              <div className={styles.emptyState}>
+                <span>
+                  No results found for "{query}"
+                  {activeCategory !== 'all' ? ` in ${activeCategory}` : ''}
+                </span>
+                {activeCategory !== 'all' && (
+                  <button
+                    type="button"
+                    className={styles.clearFilterBtn}
+                    onClick={() => {
+                      setActiveCategory('all');
+                      setQuery('');
+                      inputRef.current?.focus();
+                    }}
+                  >
+                    Reset to All Shortcuts
+                  </button>
+                )}
+              </div>
             ) : (
               filteredItems.map((item, index) => {
                 const IconComponent = item.icon || Sparkles;

@@ -224,7 +224,7 @@ export default function WidgetsLayer({ switchMode }) {
         zIndex={zIndices.spotlight}
         width={WIDGET_DIMENSIONS.spotlight.width}
         height={WIDGET_DIMENSIONS.spotlight.height}
-        cancelSelector="input, button, [role='listbox'], [role='option'], .searchPillInput, .circleBtn"
+        cancelSelector="input, button, a, [role='listbox'], [role='option'], .searchPillInput, .circleBtn, .filterChip, .spotlightDropdown, .spotlightFilterRow, .resultItem"
       >
         <SpotlightBar switchMode={switchMode} />
       </DraggableWidget>

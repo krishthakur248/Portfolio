@@ -345,6 +345,26 @@
   flex-shrink: 0;
 }
 
+.searchClearBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  margin-right: -4px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.searchClearBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
 /* Circular quick-launch buttons beside search */
 .quickActions {
   display: flex;
@@ -559,22 +579,31 @@
   padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.spotlightFilterRow::-webkit-scrollbar {
+  display: none;
 }
 
 .filterChip {
   font-size: 11px;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 9999px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
 }
 
 .filterChip:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .filterChipActive {
@@ -659,6 +688,27 @@
   text-align: center;
   color: rgba(255, 255, 255, 0.5);
   font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.clearFilterBtn {
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #2dd4bf;
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearFilterBtn:hover {
+  background: rgba(45, 212, 191, 0.15);
+  border-color: rgba(45, 212, 191, 0.4);
 }
 
 /* ── Responsiveness ── */
