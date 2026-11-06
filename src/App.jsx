@@ -60,10 +60,10 @@ function Landing({ onPick, lastUsed }) {
         <h1 className={styles.title}>
           Krish Thakur
         </h1>
-        <p className={styles.role}>Software Engineer · MERN Stack · DSA</p>
+        <p className={styles.role}>Software Engineer · Full-Stack &amp; Systems</p>
       </header>
 
-      <p className={styles.prompt}>Pick how you want to explore:</p>
+      <p className={styles.prompt}>Choose an interface:</p>
 
       <div className={styles.cards}>
         {/* CLI card */}
@@ -77,10 +77,10 @@ function Landing({ onPick, lastUsed }) {
           <div className={styles.cardIcon} aria-hidden="true">{`> _`}</div>
           <div className={styles.cardLabel}>CLI Mode</div>
           <div className={styles.cardDesc}>
-            Type commands. Explore like a developer.
+            Interactive terminal shell with native commands and tab completion.
           </div>
           <div className={styles.cardHint}>
-            {lastUsed === 'cli' ? 'Last used' : 'Recommended'}
+            {lastUsed === 'cli' ? 'Last used' : 'Terminal'}
           </div>
         </button>
 
@@ -95,10 +95,10 @@ function Landing({ onPick, lastUsed }) {
           <div className={styles.cardIcon} aria-hidden="true">{'⊞'}</div>
           <div className={styles.cardLabel}>GUI Mode</div>
           <div className={styles.cardDesc}>
-            Visual desktop. Click, drag, and explore.
+            macOS-inspired desktop with draggable widgets and windowed apps.
           </div>
           <div className={`${styles.cardHint} ${lastUsed === 'gui' ? '' : ''}`}>
-            {lastUsed === 'gui' ? 'Last used' : 'New'}
+            {lastUsed === 'gui' ? 'Last used' : 'Desktop'}
           </div>
         </button>
       </div>

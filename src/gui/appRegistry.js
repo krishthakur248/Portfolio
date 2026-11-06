@@ -93,7 +93,7 @@ const registry = {
     title: 'Welcome',
     iconSrc: '/img/icons/wellcome.png',
     component: Welcome,
-    defaultSize: { width: 620, height: 400 },
+    defaultSize: { width: 600, height: 420 },
     dockSlot: false,
     desktopSlot: true,
     desktopPos: { x: 0, y: 60 },

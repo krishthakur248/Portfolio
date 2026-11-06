@@ -3,8 +3,8 @@
     "_id": "krish_thakur_001",
     "name": "Krish Thakur",
     "role": "Software Engineer",
-    "tagline": "MERN stack developer who likes building things that actually work.",
-    "bio": "CS Engineering student at Chitkara University. I build full-stack and ML-integrated projects. Strong with data structures, algorithms, and the MERN stack. CGPA 9.94/10.",
+    "tagline": "Full-stack developer focused on real-time systems, scalable APIs, and clean interfaces.",
+    "bio": "Computer Science student at Chitkara University (CGPA 9.94). I build full-stack web platforms and Android apps, with a focus on real-time networking and data structures.",
     "phone": "+91 7018067797",
     "email": "krishthakur248@gmail.com",
     "location": "Himachal Pradesh, India",
@@ -45,7 +45,7 @@
 
   "gui": {
     "wallpaper": "gradient",
-    "welcomeText": "Hey — glad you're here. Click around, open some windows, and see what I've been building. Everything works as you'd expect from a desktop.",
+    "welcomeText": "Welcome. Feel free to open apps, check out my recent projects, or run commands from the dock and desktop widgets.",
     "menuBarName": "Krish Thakur"
   },
 
@@ -177,18 +177,24 @@
   "achievements": [
     {
       "_id": "ach_001",
-      "title": "Problem Solving",
-      "detail": "Solved 600+ problems on LeetCode across data structures and algorithms."
+      "title": "LeetCode Problem Solving",
+      "badge": "600+ Solved",
+      "tag": "DSA & Algorithms",
+      "detail": "Solved 600+ problems on LeetCode with consistent practice in Arrays, Trees, Graphs, and Dynamic Programming."
     },
     {
       "_id": "ach_002",
-      "title": "Academic Excellence",
-      "detail": "Scored 100/100 in the AI Masterclass exam covering ChatGPT, DeepSeek, and Metaverse at Chitkara University."
+      "title": "AI & Emerging Technologies",
+      "badge": "100 / 100",
+      "tag": "Academic Excellence",
+      "detail": "Scored a perfect 100/100 in the AI & Emerging Technologies curriculum exam at Chitkara University."
     },
     {
       "_id": "ach_003",
       "title": "HackIndia Hackathon",
-      "detail": "Competed among 100+ teams at Chitkara University, building a functional prototype under time constraints."
+      "badge": "100+ Teams",
+      "tag": "Hackathon Demo",
+      "detail": "Collaborated with a team of four to build and demo a working full-stack prototype in a 24-hour sprint."
     }
   ],
 

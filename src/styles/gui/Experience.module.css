@@ -1,56 +1,213 @@
-/* Experience / Education / Achievements timeline */
-.timeline { display: flex; flex-direction: column; gap: 4px; }
+/* Experience & Education — Clean Matte Dark Glass (Zero glow / shine) */
 
-.item {
+.container {
   display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 4px 0 16px 0;
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  padding: 4px 0;
-  position: relative;
 }
 
-/* Vertical line */
-.item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 18px;
-  bottom: -4px;
-  width: 1px;
-  background: var(--gui-border);
-}
-
-.dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--gui-accent);
-  border: 2px solid var(--gui-surface-solid);
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-.dotGold { background: #f59e0b; }
-
-.content { flex: 1; padding-bottom: 16px; }
-
-.title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--gui-text-primary);
-  font-family: var(--gui-font-mono);
-  margin-bottom: 2px;
-}
-
-.sub {
-  font-size: 13px;
-  color: var(--gui-accent);
-  margin-bottom: 2px;
-}
-
-.meta {
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
-  color: var(--gui-text-muted);
-  font-family: var(--gui-font-mono);
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #2dd4bf;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
 }
 
+.sectionHeaderGold {
+  color: #f59e0b;
+}
+
+/* ── Education Card ── */
+.eduCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.eduCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(45, 212, 191, 0.3);
+}
+
+.eduIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid rgba(45, 212, 191, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #2dd4bf;
+}
+
+.eduContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.eduTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eduTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.eduDegree {
+  font-size: 14px;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.pillsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.gradePill {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.28);
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+/* ── Achievements Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.achieveCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.achieveCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(245, 158, 11, 0.35);
+  transform: translateY(-2px);
+}
+
+.achieveTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.achieveIconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #f59e0b;
+}
+
+.achieveBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  letter-spacing: 0.04em;
+}
+
+.achieveTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.achieveTag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #2dd4bf;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.achieveTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.achieveDetail {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .eduCard {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -1,64 +1,211 @@
-/* Welcome note */
+/* Welcome Dialog — Clean macOS Desktop Utility (Zero AI slop) */
+
 .wrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 32px 28px;
+  padding: 24px 28px;
   height: 100%;
-  font-family: var(--gui-font-ui);
-  background: linear-gradient(
-    135deg,
-    rgba(78, 204, 163, 0.05) 0%,
-    rgba(99, 102, 241, 0.05) 100%
-  );
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
+  color: var(--gui-text-primary, #ffffff);
+  box-sizing: border-box;
 }
 
-.emoji { font-size: 40px; margin-bottom: 12px; }
-
-.heading {
-  font-size: 22px;
-  font-family: var(--gui-font-mono);
-  font-weight: 700;
-  color: var(--gui-text-primary);
+/* ── Author Hero Header ── */
+.heroRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 12px;
 }
 
-.body {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--gui-text-secondary);
-  max-width: 340px;
-  margin-bottom: 28px;
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
 }
 
-.footer {
+.heroText {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.heroBadge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2dd4bf;
+  margin-bottom: 1px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.subheading {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.introText {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  text-align: left;
+}
+
+/* ── 3-Card Guide Grid ── */
+.guideGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.guideCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  text-align: left;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.guideCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(45, 212, 191, 0.25);
+}
+
+.cardIconWrap {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cardIcon {
+  color: #2dd4bf;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.cardDesc {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+.kbd {
+  font-family: var(--gui-font-mono, monospace);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+/* ── Footer ── */
+.footerRow {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hint {
   font-size: 11px;
-  font-family: var(--gui-font-mono);
-  color: var(--gui-text-muted);
-  letter-spacing: 0.04em;
+  color: #64748b;
+  text-align: left;
 }
 
-.closeBtn {
-  background: var(--gui-accent);
-  color: #0a0e1a;
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.secondaryBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #cbd5e1;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 120ms ease;
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.primaryBtn {
+  background: #2dd4bf;
   border: none;
-  border-radius: 8px;
-  padding: 8px 24px;
-  font-size: 14px;
-  font-family: var(--gui-font-ui);
+  color: #0a0e1a;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 120ms, transform 120ms;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 120ms ease;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+  font-family: var(--gui-font-ui, -apple-system, sans-serif);
 }
-.closeBtn:hover { opacity: 0.88; transform: translateY(-1px); }
-.closeBtn:focus-visible { outline: 2px solid var(--gui-accent); outline-offset: 3px; }
 
+.primaryBtn:hover {
+  background: #5eead4;
+  transform: translateY(-1px);
+}
+
+.primaryBtn:focus-visible,
+.secondaryBtn:focus-visible {
+  outline: 2px solid #2dd4bf;
+  outline-offset: 2px;
+}
