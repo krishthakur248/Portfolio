@@ -1,6 +1,7 @@
 import React from 'react';
 import { registerCommand } from '../commandRegistry.jsx';
 import { getProfile } from '../../services/dataService.js';
+import { getCachedLeetCodeCount } from '../../services/leetcodeService.js';
 
 registerCommand('resume', {
   description: 'View resume in terminal, or --download to get the PDF',
@@ -177,7 +178,7 @@ registerCommand('resume', {
 
         {/* ── ACHIEVEMENTS ── */}
         <div style={sec}>ACHIEVEMENTS</div>
-        <div style={{ color: 'var(--text-white)', paddingLeft: '12px' }}>· 600+ LeetCode problems solved.</div>
+        <div style={{ color: 'var(--text-white)', paddingLeft: '12px' }}>· {getCachedLeetCodeCount()} LeetCode problems solved.</div>
         <div style={{ color: 'var(--text-white)', paddingLeft: '12px' }}>· 100/100 in AI Masterclass at Chitkara University.</div>
         <div style={{ color: 'var(--text-white)', paddingLeft: '12px' }}>· HackIndia Hackathon — top 100 teams.</div>
 

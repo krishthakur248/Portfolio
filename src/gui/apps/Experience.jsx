@@ -13,6 +13,7 @@ import {
   getEducationSync as getEducation,
   getAchievementsSync as getAchievements,
 } from '../../services/dataService.js';
+import { useLeetCodeCount } from '../../services/leetcodeService.js';
 import styles from '../../styles/gui/AppPanel.module.css';
 import expStyles from '../../styles/gui/Experience.module.css';
 
@@ -31,6 +32,7 @@ export default function Experience() {
   const experience   = getExperience();
   const education    = getEducation();
   const achievements = getAchievements();
+  const leetCodeCount = useLeetCodeCount();
 
   return (
     <div className={styles.panel}>
@@ -127,14 +129,20 @@ export default function Experience() {
             <div className={expStyles.grid}>
               {achievements.map((a, idx) => {
                 const IconComponent = getAchievementIcon(a, idx);
+                const isLeetCode = (a.title || '').toLowerCase().includes('leetcode');
+                const badge = isLeetCode ? `${leetCodeCount} Solved` : a.badge;
+                const detail = isLeetCode
+                  ? `Solved ${leetCodeCount} problems on LeetCode with consistent practice in Arrays, Trees, Graphs, and Dynamic Programming.`
+                  : a.detail;
+
                 return (
                   <div key={a._id} className={expStyles.achieveCard}>
                     <div className={expStyles.achieveTop}>
                       <div className={expStyles.achieveIconWrap}>
                         <IconComponent size={18} aria-hidden="true" />
                       </div>
-                      {a.badge && (
-                        <span className={expStyles.achieveBadge}>{a.badge}</span>
+                      {badge && (
+                        <span className={expStyles.achieveBadge}>{badge}</span>
                       )}
                     </div>
 
@@ -145,7 +153,7 @@ export default function Experience() {
                       <h4 className={expStyles.achieveTitle}>{a.title}</h4>
                     </div>
 
-                    <p className={expStyles.achieveDetail}>{a.detail}</p>
+                    <p className={expStyles.achieveDetail}>{detail}</p>
                   </div>
                 );
               })}

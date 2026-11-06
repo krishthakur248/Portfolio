@@ -1,6 +1,7 @@
 import React from 'react';
 import { FolderGit2, Code2, Search, ArrowRight } from 'lucide-react';
 import { getProfileSync as getProfile } from '../../services/dataService.js';
+import { useLeetCodeCount } from '../../services/leetcodeService.js';
 import useWindowStore from '../store/useWindowStore.js';
 import welcomeStyles from '../../styles/gui/Welcome.module.css';
 
@@ -8,6 +9,7 @@ export default function Welcome({ winId }) {
   const { closeApp, openApp } = useWindowStore();
   const profile = getProfile();
   const photoSrc = profile?.photo || '/img/Me.jpeg';
+  const leetCodeCount = useLeetCodeCount();
 
   function handleClose() {
     localStorage.setItem('gui_welcome_seen', '1');
@@ -64,7 +66,7 @@ export default function Welcome({ winId }) {
           <div className={welcomeStyles.cardBody}>
             <span className={welcomeStyles.cardTitle}>Live Widgets</span>
             <span className={welcomeStyles.cardDesc}>
-              Real-time LeetCode count (580+ solved), live weather, and draggable cards.
+              Real-time LeetCode count ({leetCodeCount} solved), live weather, and draggable cards.
             </span>
           </div>
         </div>

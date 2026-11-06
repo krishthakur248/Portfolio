@@ -9,6 +9,7 @@
  */
 
 import data from '../data/demoData.json';
+import { getCachedLeetCodeCount } from './leetcodeService.js';
 
 const resolved = (v) => Promise.resolve(v);
 
@@ -17,11 +18,11 @@ export const getSkills       = () => resolved(data.skills       ?? []);
 export const getProjects     = () => resolved(data.projects     ?? []);
 export const getExperience   = () => resolved(data.experience   ?? []);
 export const getEducation    = () => resolved(data.education    ?? []);
-export const getAchievements = () => resolved(data.achievements ?? []);
+export const getAchievements = () => resolved(getAchievementsSync());
 export const getContact      = () => resolved(data.contact);
 export const getSocials      = () => resolved(data.socials      ?? []);
 export const getGuiConfig    = () => resolved(data.gui          ?? {});
-export const getWidgetsData  = () => resolved(data.widgets      ?? {});
+export const getWidgetsData  = () => resolved(getWidgetsDataSync());
 
 export function getProject(id) {
   const project = data.projects?.find((p) => p._id === id || p.slug === id);
@@ -38,8 +39,35 @@ export const getSkillsSync       = () => data.skills       ?? [];
 export const getProjectsSync     = () => data.projects     ?? [];
 export const getExperienceSync   = () => data.experience   ?? [];
 export const getEducationSync    = () => data.education    ?? [];
-export const getAchievementsSync = () => data.achievements ?? [];
+export const getAchievementsSync = () => {
+  const list = data.achievements ?? [];
+  const count = getCachedLeetCodeCount();
+  return list.map((a) => {
+    if (a._id === 'ach_001' || (a.title || '').toLowerCase().includes('leetcode')) {
+      return {
+        ...a,
+        stat: count,
+        badge: `${count} Solved`,
+        detail: `Solved ${count} problems on LeetCode with consistent practice in Arrays, Trees, Graphs, and Dynamic Programming.`,
+      };
+    }
+    return a;
+  });
+};
 export const getContactSync      = () => data.contact;
 export const getSocialsSync      = () => data.socials      ?? [];
 export const getGuiConfigSync    = () => data.gui          ?? {};
-export const getWidgetsDataSync  = () => data.widgets      ?? {};
+export const getWidgetsDataSync  = () => {
+  const widgets = data.widgets ?? {};
+  const count = getCachedLeetCodeCount();
+  if (widgets.dsaFocus) {
+    return {
+      ...widgets,
+      dsaFocus: {
+        ...widgets.dsaFocus,
+        stat: count,
+      },
+    };
+  }
+  return widgets;
+};

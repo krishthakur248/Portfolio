@@ -24,6 +24,7 @@ import {
   getAchievementsSync,
   getSocialsSync,
 } from '../../services/dataService.js';
+import { useLeetCodeCount } from '../../services/leetcodeService.js';
 import styles from '../../styles/gui/Widgets.module.css';
 
 const CATEGORIES = ['all', 'apps', 'projects', 'skills', 'experience', 'commands'];
@@ -76,10 +77,11 @@ export default function SpotlightBar({ switchMode }) {
   const inputRef = useRef(null);
   const { openApp } = useWindowStore();
 
+  const leetCodeCount = useLeetCodeCount();
   const projects = useMemo(() => getProjectsSync() || [], []);
   const skillGroups = useMemo(() => getSkillsSync() || [], []);
   const education = useMemo(() => getEducationSync() || [], []);
-  const achievements = useMemo(() => getAchievementsSync() || [], []);
+  const achievements = useMemo(() => getAchievementsSync() || [], [leetCodeCount]);
   const socials = useMemo(() => getSocialsSync() || [], []);
 
   // Global Ctrl+K / Cmd+K listener
@@ -215,13 +217,13 @@ export default function SpotlightBar({ switchMode }) {
       {
         id: 'sug-leetcode',
         url: 'https://leetcode.com/krishthakur248',
-        title: 'LeetCode (600+ Solved)',
+        title: `LeetCode (${leetCodeCount} Solved)`,
         category: 'Links',
         desc: 'Visit competitive programming profile',
         icon: Code2,
       },
     ].filter(Boolean);
-  }, []);
+  }, [leetCodeCount]);
 
   // Filter items based on active query & category
   const filteredItems = useMemo(() => {

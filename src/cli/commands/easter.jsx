@@ -1,5 +1,6 @@
 import React from 'react';
 import { registerCommand } from '../commandRegistry.jsx';
+import { getCachedLeetCodeCount } from '../../services/leetcodeService.js';
 
 // ── sudo hire-me ──────────────────────────────────────────────
 registerCommand('sudo', {
@@ -27,7 +28,7 @@ Executing: hire Krish Thakur...
 `}
           <span style={{ color: 'var(--text-white)' }}>
             Smart call. He builds real things: ride-sharing platforms, offline mesh networks,{'\n'}
-            mentoring tools. CGPA 9.94. 600+ LeetCode problems. MERN + Android + DSA.
+            mentoring tools. CGPA 9.94. {getCachedLeetCodeCount()} LeetCode problems. MERN + Android + DSA.
           </span>
           {'\n\n'}
           <span style={{ color: 'var(--text-dim)' }}>Reach him at: </span>
