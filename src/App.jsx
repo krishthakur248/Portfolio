@@ -66,6 +66,24 @@ function Landing({ onPick, lastUsed }) {
       <p className={styles.prompt}>Choose an interface:</p>
 
       <div className={styles.cards}>
+        {/* GUI card */}
+        <button
+          id="pick-gui"
+          className={`${styles.card} ${hovered === 'gui' ? styles.cardActive : ''}`}
+          onMouseEnter={() => setHovered('gui')}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => onPick('gui')}
+        >
+          <div className={styles.cardIcon} aria-hidden="true">{'⊞'}</div>
+          <div className={styles.cardLabel}>GUI Mode</div>
+          <div className={styles.cardDesc}>
+            macOS-inspired desktop with draggable widgets and windowed apps.
+          </div>
+          <div className={`${styles.cardHint} ${lastUsed === 'gui' ? '' : ''}`}>
+            {lastUsed === 'gui' ? 'Last used' : 'Desktop'}
+          </div>
+        </button>
+        
         {/* CLI card */}
         <button
           id="pick-cli"
@@ -84,23 +102,6 @@ function Landing({ onPick, lastUsed }) {
           </div>
         </button>
 
-        {/* GUI card */}
-        <button
-          id="pick-gui"
-          className={`${styles.card} ${hovered === 'gui' ? styles.cardActive : ''}`}
-          onMouseEnter={() => setHovered('gui')}
-          onMouseLeave={() => setHovered(null)}
-          onClick={() => onPick('gui')}
-        >
-          <div className={styles.cardIcon} aria-hidden="true">{'⊞'}</div>
-          <div className={styles.cardLabel}>GUI Mode</div>
-          <div className={styles.cardDesc}>
-            macOS-inspired desktop with draggable widgets and windowed apps.
-          </div>
-          <div className={`${styles.cardHint} ${lastUsed === 'gui' ? '' : ''}`}>
-            {lastUsed === 'gui' ? 'Last used' : 'Desktop'}
-          </div>
-        </button>
       </div>
 
       <footer className={styles.footer}>
