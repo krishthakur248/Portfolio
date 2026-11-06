@@ -3,11 +3,12 @@
 .wrap {
   display: flex;
   flex-direction: column;
-  padding: 24px 28px;
+  padding: 22px 26px 20px 26px;
   height: 100%;
   font-family: var(--gui-font-ui, -apple-system, sans-serif);
   color: var(--gui-text-primary, #ffffff);
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 /* ── Author Hero Header ── */
@@ -146,8 +147,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 12px;
+  padding-top: 14px;
+  padding-bottom: 2px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 
 .hint {
@@ -170,6 +173,7 @@
   border-radius: 9999px;
   padding: 6px 14px;
   font-size: 12px;
+  line-height: 1.4;
   font-weight: 500;
   cursor: pointer;
   transition: all 120ms ease;
@@ -189,6 +193,7 @@
   border-radius: 9999px;
   padding: 6px 16px;
   font-size: 12px;
+  line-height: 1.4;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
