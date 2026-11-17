@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search,
   Terminal,
@@ -37,6 +38,9 @@ const APPS_LIST = [
   { id: 'resume',     title: 'Resume Viewer',          category: 'Apps', desc: 'View and download vector resume PDF',            icon: FileText },
   { id: 'terminal',   title: 'Terminal Emulator',      category: 'Apps', desc: 'Integrated interactive UNIX shell',              icon: Terminal },
   { id: 'contact',    title: 'Contact',                category: 'Apps', desc: 'Direct email, GitHub, LinkedIn connections',     icon: Mail },
+  // Widgets
+  { id: 'widget-github',   widgetId: 'githubActivity',   title: 'GitHub Activity',   category: 'Widgets', desc: 'GitHub contribution heatmap widget', icon: Globe },
+  { id: 'widget-leetcode', widgetId: 'leetcodeActivity', title: 'LeetCode Activity', category: 'Widgets', desc: 'LeetCode submission heatmap widget',  icon: Code2 },
 ];
 
 const TERMINAL_COMMANDS = [
@@ -72,8 +76,10 @@ export default function SpotlightBar({ switchMode }) {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
 
   const containerRef = useRef(null);
+  const pillRef = useRef(null);
   const inputRef = useRef(null);
   const { openApp } = useWindowStore();
 
@@ -106,22 +112,32 @@ export default function SpotlightBar({ switchMode }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  // Click outside to close
+  // Click outside to close — accounts for the portal dropdown being outside containerRef
   useEffect(() => {
+    if (!isOpen) return;
+    // Update dropdown position relative to the containerRef (search pill + buttons row)
+    if (containerRef.current) {
+      const r = containerRef.current.getBoundingClientRect();
+      setDropdownPos({ top: r.bottom + 6, left: r.left });
+    }
     function handleClickOutside(e) {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+      const inContainer = containerRef.current && containerRef.current.contains(e.target);
+      const inDropdown  = e.target.closest?.('[data-spotlight-dropdown]');
+      if (!inContainer && !inDropdown) {
         setIsOpen(false);
       }
     }
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
   // Comprehensive searchable catalogue
   const allItems = useMemo(() => {
-    const list = [...APPS_LIST];
+    const WIDGET_ITEMS = [
+      { id: 'widget-github',   widgetId: 'githubActivity',   title: 'GitHub Activity',   category: 'Widgets', desc: 'GitHub contribution heatmap widget', keywords: 'heatmap github activity contributions', icon: Globe },
+      { id: 'widget-leetcode', widgetId: 'leetcodeActivity', title: 'LeetCode Activity', category: 'Widgets', desc: 'LeetCode submission heatmap widget',  keywords: 'heatmap leetcode activity submissions',  icon: Code2 },
+    ];
+    const list = [...APPS_LIST, ...WIDGET_ITEMS];
 
     // Projects
     projects.forEach((p) => {
@@ -304,7 +320,12 @@ export default function SpotlightBar({ switchMode }) {
   function handleSelect(item) {
     if (!item) return;
 
-    if (item.url) {
+    if (item.widgetId) {
+      // Bring a desktop widget to front
+      window.dispatchEvent(
+        new CustomEvent('portfolio:bringWidgetToFront', { detail: { widgetId: item.widgetId } })
+      );
+    } else if (item.url) {
       window.open(item.url, '_blank', 'noopener,noreferrer');
     } else if (item.isCommand) {
       openApp('terminal');
@@ -451,13 +472,20 @@ export default function SpotlightBar({ switchMode }) {
         </button>
       </div>
 
-      {/* ── Interactive Spotlight Dropdown ── */}
-      {isOpen && (
+      {/* ── Spotlight Dropdown — rendered in a portal so it escapes all stacking contexts ── */}
+      {isOpen && typeof document !== 'undefined' && createPortal(
         <div
           id="spotlight-results-list"
+          data-spotlight-dropdown="true"
           className={styles.spotlightDropdown}
           role="listbox"
           aria-label="Search results"
+          style={{
+            position: 'fixed',
+            top: dropdownPos.top,
+            left: dropdownPos.left,
+            zIndex: 99999,
+          }}
         >
           {/* Direct Category Filter Tabs */}
           <div className={styles.spotlightFilterRow}>
@@ -549,7 +577,8 @@ export default function SpotlightBar({ switchMode }) {
               })
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

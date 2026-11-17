@@ -1,4 +1,7 @@
 {
+  "githubUsername": "krishthakur248",
+  "leetcodeUsername": "krishthakur248",
+
   "profile": {
     "_id": "krish_thakur_001",
     "name": "Krish Thakur",
@@ -50,20 +53,6 @@
   },
 
   "widgets": {
-    "weather": {
-      "location": "Himachal Pradesh",
-      "temperature": "18°",
-      "condition": "Partly Cloudy",
-      "high": "22°",
-      "low": "11°",
-      "hourly": [
-        { "time": "10 AM", "temp": "18°", "icon": "CloudSun" },
-        { "time": "11 AM", "temp": "19°", "icon": "Sun" },
-        { "time": "12 PM", "temp": "21°", "icon": "Sun" },
-        { "time": "1 PM",  "temp": "22°", "icon": "CloudSun" },
-        { "time": "2 PM",  "temp": "20°", "icon": "CloudRain" }
-      ]
-    },
     "dsaFocus": {
       "badge": "DSA FOCUS",
       "stat": "600+",

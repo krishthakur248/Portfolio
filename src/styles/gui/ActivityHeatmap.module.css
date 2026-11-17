@@ -1,0 +1,401 @@
+/*
+  ActivityHeatmap.module.css  — layout v5
+  Glass: identical recipe as .glassCard with a fixed neutral-dark tint so both
+         widgets look like one family regardless of wallpaper colour behind them.
+  Heat colours: unified green scale for BOTH GitHub and LeetCode.
+  --heat-0 through --heat-4 are defined here and used for all data-level selectors.
+*/
+
+/* ── Unified heat colour variables ── */
+:root {
+  --heat-0: rgba(255, 255, 255, 0.14);   /* empty cell — faint white, clearly "none" */
+  --heat-1: #2e9e5b;   /* dim green */
+  --heat-2: #3ecf7a;   /* mid green */
+  --heat-3: #5ee79a;   /* bright mint */
+  --heat-4: #9bf6c3;   /* lightest highlight */
+}
+
+/* ── Glass card base — identical glass recipe as .glassCard ── */
+/* Fixed base tint (rgba dark-neutral) prevents the card from picking up
+   the wallpaper hue. The frosted backdrop still shows through. */
+.heatmapWidget {
+  /* Fixed dark-neutral tint + same glass recipe as the other widgets */
+  background:
+    linear-gradient(135deg, rgba(18, 20, 32, 0.72) 0%, rgba(24, 26, 40, 0.68) 100%);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.45),
+    0 2px 10px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  overflow: visible;
+
+  /* Layout */
+  padding: 12px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+  /* Width is controlled by DraggableWidget, not fixed here */
+  width: 100%;
+}
+
+.heatmapWidget:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.55),
+    0 4px 14px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+/* Subtle fade-in; not applied when prefers-reduced-motion */
+.fadeIn {
+  animation: heatFadeIn 0.35s ease both;
+}
+@keyframes heatFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.headerIcon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+}
+
+.widgetTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+
+.updatedAt {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--gui-font-mono, monospace);
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+.profileLink {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  transition: color 0.15s ease;
+}
+.profileLink:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Stats row ── */
+.statsRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bigStat {
+  line-height: 1.25;
+  min-width: 0;
+}
+.bigStat strong {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  display: block;
+  line-height: 1.1;
+}
+.bigStatLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+.statPills {
+  display: flex;
+  gap: 14px;
+  flex-shrink: 0;
+  align-items: flex-start;
+}
+.statPill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+.statValue {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.statLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+/* ── Grid wrapper ── */
+.gridWrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Month labels — aligned to week columns, same 1fr template as cell grid */
+.monthLabels {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks, 53), 1fr);
+  column-gap: 2px;
+  padding-left: 28px;
+  height: 14px;
+}
+.monthLabel {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  grid-row: 1;
+  line-height: 14px;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  overflow: visible;
+}
+
+/* Grid body */
+.gridBody {
+  display: flex;
+  gap: 2px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.dayLabels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 24px;
+  flex-shrink: 0;
+}
+.dayLabel {
+  font-size: 9px;
+  color: transparent;
+  line-height: 10px;
+  height: 10px;
+  user-select: none;
+}
+.dayLabelVisible {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Cell grid:
+   Columns: 1fr — fills all available width so ALL 53 weeks are visible.
+   Rows:    explicit 10px — compact fixed height, no aspect-ratio overflow. */
+.cellGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks, 53), 1fr);
+  grid-template-rows: repeat(7, 10px);
+  gap: 2px;
+  grid-auto-flow: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Cells ── */
+.cell {
+  width: 100%;
+  height: 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.cell:hover {
+  filter: brightness(1.3);
+  z-index: 10;
+  position: relative;
+}
+
+/* Padded cells (outside the real date range) */
+.cellPad {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ── Unified green heat scale — both github and leetcode ── */
+/* Level 0: faint white "empty" */
+.cell[data-level="0"]  { background: var(--heat-0); }
+/* Levels 1-4: green gradient, bright enough on dark glass */
+.cell[data-level="1"]  { background: var(--heat-1); }
+.cell[data-level="2"]  { background: var(--heat-2); }
+.cell[data-level="3"]  { background: var(--heat-3); }
+.cell[data-level="4"]  { background: var(--heat-4); }
+
+/* Today: thin outline, no fill change */
+.cell[data-today="true"] {
+  outline: 1.5px solid rgba(255, 255, 255, 0.85);
+  outline-offset: -1px;
+}
+
+/* ── Tooltip ── */
+.tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  background: rgba(14, 16, 26, 0.88);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  padding: 5px 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+.legendLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 3px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+.legend .cell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  cursor: default;
+  flex-shrink: 0;
+}
+.legend .cell:hover { transform: none; }
+
+/* ── Skeleton ── */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+.skeletonBar {
+  height: 14px;
+  width: 50%;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  animation: shimmer 1.4s infinite linear;
+}
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr);
+  grid-template-rows: repeat(7, 10px);
+  grid-auto-flow: column;
+  gap: 2px;
+}
+.skeletonCell {
+  width: 100%;
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: shimmer 1.4s infinite linear;
+}
+@keyframes shimmer {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+/* ── Error state ── */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 90px;
+  text-align: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+.errorIcon {
+  font-size: 20px;
+  color: rgba(255, 190, 80, 0.9);
+}
+.errorMsg {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.errorReason {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .heatmapWidget {
+    width: 100%;
+    padding: 12px 12px 10px;
+    border-radius: 16px;
+    overflow-x: auto;
+  }
+  .statPills { display: none; }
+  .cellGrid {
+    grid-template-columns: repeat(26, 1fr);
+  }
+}

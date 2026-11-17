@@ -121,7 +121,7 @@ export default function DraggableWidget({
         ref={nodeRef}
         onClickCapture={handleClickCapture}
         className={styles.draggableWidget}
-        style={{ zIndex }}
+        style={{ zIndex, ...(width ? { width } : {}) }}
       >
         <div ref={innerRef} className={styles.widgetInner}>
           {children}
