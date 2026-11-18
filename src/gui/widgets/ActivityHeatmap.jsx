@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { getActivity } from '../../services/activityService.js';
+import { getActivity, refreshActivity } from '../../services/activityService.js';
 import styles from '../../styles/gui/ActivityHeatmap.module.css';
 
 /** How long ago was updatedAt? Returns a string like "3 hours ago" */
@@ -112,25 +112,40 @@ export default function ActivityHeatmap({ source, title, profileUrl, profileLabe
   const [errorMsg, setErrorMsg] = useState('');
   const [updatedAt, setUpdatedAt] = useState(null);
   const [tooltip, setTooltip]   = useState(null); // { x, y, text }
+  const [refreshing, setRefreshing] = useState(false);
   const gridRef = useRef(null);
+
+  // Shared loader — reused by both mount and refresh button
+  const loadActivity = useCallback(async (fetcher) => {
+    const activity = await fetcher();
+    setUpdatedAt(activity.updatedAt);
+    const src = activity[source];
+    if (src.status === 'ok') {
+      setData(src.data);
+      setState('ok');
+    } else {
+      setErrorMsg(src.reason ?? 'Could not load data');
+      setState('error');
+    }
+  }, [source]);
 
   // Fetch on mount
   useEffect(() => {
     let alive = true;
-    getActivity().then(activity => {
-      if (!alive) return;
-      setUpdatedAt(activity.updatedAt);
-      const src = activity[source];
-      if (src.status === 'ok') {
-        setData(src.data);
-        setState('ok');
-      } else {
-        setErrorMsg(src.reason ?? 'Could not load data');
-        setState('error');
-      }
-    });
+    loadActivity(getActivity).catch(() => {});
     return () => { alive = false; };
-  }, [source]);
+  }, [source, loadActivity]);
+
+  // Manual refresh handler
+  const handleRefresh = useCallback(async () => {
+    if (refreshing) return;
+    setRefreshing(true);
+    try {
+      await loadActivity(refreshActivity);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, loadActivity]);
 
   const weeks       = state === 'ok' ? buildWeeks(data.days)       : [];
   const monthLabels = state === 'ok' ? buildMonthLabels(weeks)     : [];
@@ -182,15 +197,26 @@ export default function ActivityHeatmap({ source, title, profileUrl, profileLabe
             <span className={styles.updatedAt}>Updated {timeAgo(updatedAt)}</span>
           )}
         </div>
-        <a
-          className={styles.profileLink}
-          href={profileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`View ${profileLabel}`}
-        >
-          View profile ↗
-        </a>
+        <div className={styles.headerRight}>
+          <button
+            className={`${styles.refreshBtn} ${refreshing ? styles.refreshBtnSpinning : ''}`}
+            onClick={handleRefresh}
+            disabled={refreshing}
+            title={refreshing ? 'Refreshing…' : 'Refresh activity data'}
+            aria-label="Refresh activity data"
+          >
+            ↻
+          </button>
+          <a
+            className={styles.profileLink}
+            href={profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${profileLabel}`}
+          >
+            View profile ↗
+          </a>
+        </div>
       </div>
 
       {/* ── Loading ── */}

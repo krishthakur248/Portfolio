@@ -89,3 +89,47 @@ export function invalidateActivityCache() {
   _cache = null;
   _promise = null;
 }
+
+/**
+ * Force-refresh activity data by re-fetching activity.json with cache-busting.
+ * Clears the in-memory cache first, then fetches fresh data.
+ * Returns the same shape as getActivity().
+ */
+export async function refreshActivity() {
+  _cache = null;
+  _promise = null;
+  // Bust CDN/browser cache with a timestamp query param
+  const bustUrl = `${ACTIVITY_URL}?t=${Date.now()}`;
+  _promise = (async () => {
+    try {
+      const res = await fetch(bustUrl, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw = await res.json();
+      if (!raw || typeof raw !== 'object') throw new Error('Invalid JSON');
+
+      const wrap = (src, name) => {
+        const v = validateSource(src);
+        if (v === null) return { status: 'null', reason: `${name} data was not available when last fetched` };
+        if (v === 'invalid') return { status: 'error', reason: `${name} data failed validation` };
+        return { status: 'ok', data: src };
+      };
+
+      const result = {
+        updatedAt: raw.updatedAt ?? null,
+        github:    wrap(raw.github,   'GitHub'),
+        leetcode:  wrap(raw.leetcode, 'LeetCode'),
+      };
+      _cache = result;
+      return result;
+    } catch (err) {
+      return {
+        updatedAt: null,
+        github:    { status: 'error', reason: 'Could not refresh — check your connection' },
+        leetcode:  { status: 'error', reason: 'Could not refresh — check your connection' },
+      };
+    } finally {
+      _promise = null;
+    }
+  })();
+  return _promise;
+}

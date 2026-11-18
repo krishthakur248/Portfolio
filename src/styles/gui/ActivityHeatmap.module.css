@@ -119,6 +119,49 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
+/* ── Header right group (refresh + profile link) ── */
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Refresh button ── */
+.refreshBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  padding: 0;
+}
+.refreshBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(30deg);
+}
+.refreshBtn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.refreshBtnSpinning {
+  animation: spin 0.7s linear infinite;
+}
+
 /* ── Stats row ── */
 .statsRow {
   display: flex;
