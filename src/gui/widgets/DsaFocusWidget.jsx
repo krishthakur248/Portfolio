@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Code2 } from 'lucide-react';
 import { getWidgetsDataSync } from '../../services/dataService.js';
-import { getActivity } from '../../services/activityService.js';
 import { useLeetCodeCount } from '../../services/leetcodeService.js';
 import styles from '../../styles/gui/Widgets.module.css';
 
@@ -15,31 +14,11 @@ export default function DsaFocusWidget() {
     url: 'https://leetcode.com/krishthakur248',
   };
 
-  // Real-time LeetCode count from leetcodeService (live API)
-  const liveCount = useLeetCodeCount();
-
-  // Activity.json totalSolved (from the daily fetch script)
-  const [activitySolved, setActivitySolved] = useState(null);
-
-  useEffect(() => {
-    let alive = true;
-    getActivity().then((activity) => {
-      if (!alive) return;
-      const lc = activity?.leetcode;
-      if (lc?.status === 'ok' && typeof lc.data?.totalSolved === 'number') {
-        setActivitySolved(String(lc.data.totalSolved));
-      }
-    });
-    return () => { alive = false; };
-  }, []);
-
-  // Priority: activity.json totalSolved > live API count > demoData fallback > '—'
-  const displayCount = activitySolved ?? liveCount ?? dsa.stat ?? '—';
+  // Reads from activity.json via activityService — no external API calls, no CORS issues
+  const displayCount = useLeetCodeCount();
 
   function handleClick() {
-    if (dsa.url) {
-      window.open(dsa.url, '_blank', 'noopener,noreferrer');
-    }
+    if (dsa.url) window.open(dsa.url, '_blank', 'noopener,noreferrer');
   }
 
   return (
@@ -50,10 +29,7 @@ export default function DsaFocusWidget() {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
-        }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); }
       }}
     >
       <div className={styles.cardTopBadge}>
