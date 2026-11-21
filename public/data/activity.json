@@ -1,16 +1,11 @@
 {
-  "updatedAt": "2026-11-20T10:20:02.542Z",
+  "updatedAt": "2026-11-21T10:04:28.828Z",
   "github": {
-    "total": 249,
-    "activeDays": 91,
+    "total": 248,
+    "activeDays": 90,
     "maxStreak": 5,
     "currentStreak": 0,
     "days": [
-      {
-        "date": "2025-11-21",
-        "count": 1,
-        "level": 1
-      },
       {
         "date": "2025-11-22",
         "count": 0,
@@ -1830,6 +1825,11 @@
         "date": "2026-11-20",
         "count": 0,
         "level": 0
+      },
+      {
+        "date": "2026-11-21",
+        "count": 0,
+        "level": 0
       }
     ]
   },
@@ -1837,7 +1837,7 @@
     "total": 782,
     "activeDays": 202,
     "maxStreak": 19,
-    "currentStreak": 4,
+    "currentStreak": 0,
     "totalSolved": 601,
     "days": [
       {
