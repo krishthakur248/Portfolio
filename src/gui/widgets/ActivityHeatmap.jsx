@@ -23,10 +23,17 @@ function buildWeeks(days) {
 
   // Find the actual date range in the data
   const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
-  const firstDate = new Date(sorted[0].date);
-  const lastDate  = new Date(sorted[sorted.length - 1].date);
-  const firstStr  = sorted[0].date;
-  const lastStr   = sorted[sorted.length - 1].date;
+  const firstStr = sorted[0].date;
+
+  // Always extend the grid to TODAY so days after the last submission
+  // (e.g. Nov 20, 21 when last solve was Nov 19) show as empty cells, not missing.
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const lastStr  = sorted[sorted.length - 1].date > todayStr
+    ? sorted[sorted.length - 1].date  // future data (shouldn't happen, but safe)
+    : todayStr;                        // always show up to today
+
+  const firstDate = new Date(firstStr);
+  const lastDate  = new Date(lastStr);
 
   // Pad back to the Sunday of the first week
   const startDate = new Date(firstDate);
@@ -46,12 +53,12 @@ function buildWeeks(days) {
     if (map.has(dateStr)) {
       // Real data day (may have count=0 for GitHub which includes all days)
       week.push(map.get(dateStr));
-    } else if (dateStr < firstStr || dateStr > lastStr) {
-      // Outside the data range → true padding cell (invisible, week-align only)
+    } else if (dateStr < firstStr) {
+      // Before the data range starts → true padding cell (invisible, week-align only)
       week.push({ date: dateStr, count: 0, level: 0, _pad: true });
     } else {
-      // Inside the data range but missing from API (e.g. LeetCode zero-submission days)
-      // → show as an empty (level 0) cell, NOT as padding
+      // Inside data range but missing from API, OR after last submission up to today
+      // → show as an empty level-0 cell so the grid always reaches today
       week.push({ date: dateStr, count: 0, level: 0 });
     }
     if (cur.getDay() === 6) {
@@ -107,45 +114,67 @@ const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
  *   widgetWidth: number  (px — from DraggableWidget, so cells never overflow)
  */
 export default function ActivityHeatmap({ source, title, profileUrl, profileLabel, widgetWidth }) {
-  const [state, setState]       = useState('loading'); // 'loading' | 'error' | 'ok'
-  const [data, setData]         = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [state, setState]         = useState('loading'); // 'loading' | 'error' | 'ok'
+  const [data, setData]           = useState(null);
+  const [errorMsg, setErrorMsg]   = useState('');
   const [updatedAt, setUpdatedAt] = useState(null);
-  const [tooltip, setTooltip]   = useState(null); // { x, y, text }
+  const [tooltip, setTooltip]     = useState(null); // { x, y, text }
   const [refreshing, setRefreshing] = useState(false);
-  const gridRef = useRef(null);
+  const gridRef    = useRef(null);
+  const mountedRef = useRef(true); // tracks whether component is still mounted
 
-  // Shared loader — reused by both mount and refresh button
-  const loadActivity = useCallback(async (fetcher) => {
-    const activity = await fetcher();
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  /** Apply a fetched activity result to state */
+  const applyActivity = useCallback((activity) => {
+    if (!mountedRef.current) return;
     setUpdatedAt(activity.updatedAt);
     const src = activity[source];
-    if (src.status === 'ok') {
+    if (src?.status === 'ok') {
       setData(src.data);
       setState('ok');
     } else {
-      setErrorMsg(src.reason ?? 'Could not load data');
+      setErrorMsg(src?.reason ?? 'Could not load data');
       setState('error');
     }
   }, [source]);
 
-  // Fetch on mount
+  // Initial load on mount
   useEffect(() => {
-    let alive = true;
-    loadActivity(getActivity).catch(() => {});
-    return () => { alive = false; };
-  }, [source, loadActivity]);
+    setState('loading');
+    getActivity().then(applyActivity).catch(() => {
+      if (!mountedRef.current) return;
+      setErrorMsg('Could not load activity data');
+      setState('error');
+    });
+  }, [source, applyActivity]);
 
-  // Manual refresh handler
+  // Manual refresh — use a ref for the flag so the callback never goes stale
+  const refreshingRef = useRef(false);
   const handleRefresh = useCallback(async () => {
-    if (refreshing) return;
-    setRefreshing(true);
-    try {
-      await loadActivity(refreshActivity);
-    } finally {
-      setRefreshing(false);
+    console.log('[Heatmap] ↻ handleRefresh called, source=', source, 'refreshingRef=', refreshingRef.current);
+    if (refreshingRef.current) {
+      console.log('[Heatmap] ↻ already refreshing, skip');
+      return;
     }
-  }, [refreshing, loadActivity]);
+    refreshingRef.current = true;
+    setRefreshing(true);
+    console.log('[Heatmap] ↻ setRefreshing(true), calling refreshActivity()...');
+    try {
+      const activity = await refreshActivity();
+      console.log('[Heatmap] ↻ refreshActivity returned:', activity?.updatedAt, 'source status:', activity?.[source]?.status);
+      applyActivity(activity);
+    } catch (err) {
+      console.error('[Heatmap] ↻ refreshActivity threw:', err);
+    } finally {
+      refreshingRef.current = false;
+      if (mountedRef.current) setRefreshing(false);
+      console.log('[Heatmap] ↻ done');
+    }
+  }, [applyActivity, source]);
 
   const weeks       = state === 'ok' ? buildWeeks(data.days)       : [];
   const monthLabels = state === 'ok' ? buildMonthLabels(weeks)     : [];
@@ -200,7 +229,14 @@ export default function ActivityHeatmap({ source, title, profileUrl, profileLabe
         <div className={styles.headerRight}>
           <button
             className={`${styles.refreshBtn} ${refreshing ? styles.refreshBtnSpinning : ''}`}
-            onClick={handleRefresh}
+            onClick={(e) => {
+              console.log('[Heatmap] ↻ BUTTON onClick fired, source=', source, 'e.defaultPrevented=', e.defaultPrevented);
+              handleRefresh();
+            }}
+            onMouseDown={(e) => {
+              console.log('[Heatmap] ↻ BUTTON onMouseDown fired');
+              e.stopPropagation(); // prevent draggable from starting a drag on the button
+            }}
             disabled={refreshing}
             title={refreshing ? 'Refreshing…' : 'Refresh activity data'}
             aria-label="Refresh activity data"

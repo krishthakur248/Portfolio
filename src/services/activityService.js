@@ -96,40 +96,53 @@ export function invalidateActivityCache() {
  * Returns the same shape as getActivity().
  */
 export async function refreshActivity() {
+  console.log('[activityService] refreshActivity() called');
   _cache = null;
   _promise = null;
-  // Bust CDN/browser cache with a timestamp query param
-  const bustUrl = `${ACTIVITY_URL}?t=${Date.now()}`;
-  _promise = (async () => {
+
+  // In dev mode: call the Vite server middleware to actually re-run the fetch script
+  // so activity.json gets fresh API data before we re-read it.
+  if (import.meta.env.DEV) {
     try {
-      const res = await fetch(bustUrl, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const raw = await res.json();
-      if (!raw || typeof raw !== 'object') throw new Error('Invalid JSON');
-
-      const wrap = (src, name) => {
-        const v = validateSource(src);
-        if (v === null) return { status: 'null', reason: `${name} data was not available when last fetched` };
-        if (v === 'invalid') return { status: 'error', reason: `${name} data failed validation` };
-        return { status: 'ok', data: src };
-      };
-
-      const result = {
-        updatedAt: raw.updatedAt ?? null,
-        github:    wrap(raw.github,   'GitHub'),
-        leetcode:  wrap(raw.leetcode, 'LeetCode'),
-      };
-      _cache = result;
-      return result;
+      console.log('[activityService] DEV mode — calling /api/refresh-activity to re-run fetch script...');
+      const r = await fetch('/api/refresh-activity', { method: 'POST' });
+      const json = await r.json();
+      console.log('[activityService] fetch script result:', json);
     } catch (err) {
-      return {
-        updatedAt: null,
-        github:    { status: 'error', reason: 'Could not refresh — check your connection' },
-        leetcode:  { status: 'error', reason: 'Could not refresh — check your connection' },
-      };
-    } finally {
-      _promise = null;
+      console.warn('[activityService] /api/refresh-activity failed (continuing anyway):', err.message);
     }
-  })();
-  return _promise;
+  }
+
+  const wrap = (src, name) => {
+    const v = validateSource(src);
+    if (v === null) return { status: 'null', reason: `${name} data was not available when last fetched` };
+    if (v === 'invalid') return { status: 'error', reason: `${name} data failed validation` };
+    return { status: 'ok', data: src };
+  };
+
+  try {
+    const bustUrl = `${ACTIVITY_URL}?t=${Date.now()}`;
+    console.log('[activityService] fetching:', bustUrl);
+    const res = await fetch(bustUrl, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' },
+    });
+    console.log('[activityService] fetch response status:', res.status);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const raw = await res.json();
+    console.log('[activityService] parsed JSON, updatedAt=', raw?.updatedAt);
+    if (!raw || typeof raw !== 'object') throw new Error('Invalid JSON');
+
+    const result = {
+      updatedAt: raw.updatedAt ?? null,
+      github:    wrap(raw.github,   'GitHub'),
+      leetcode:  wrap(raw.leetcode, 'LeetCode'),
+    };
+    console.log('[activityService] github status=', result.github.status, 'leetcode status=', result.leetcode.status);
+    _cache = result;
+    return result;
+  } catch (err) {
+    console.error('[activityService] refreshActivity failed:', err.message);
+    return getActivity();
+  }
 }

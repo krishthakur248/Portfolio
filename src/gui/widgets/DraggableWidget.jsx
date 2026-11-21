@@ -92,16 +92,14 @@ export default function DraggableWidget({
     const finalPos = { x: snappedX, y: snappedY };
     setPos(finalPos);
     onPosChange?.(id, finalPos);
-
-    setTimeout(() => {
-      hasMovedBeyondThreshold.current = false;
-    }, 50);
   }
 
   function handleClickCapture(e) {
+    console.log('[DraggableWidget] onClickCapture fired, hasMovedBeyondThreshold=', hasMovedBeyondThreshold.current, 'target=', e.target.tagName, e.target.className);
     if (hasMovedBeyondThreshold.current) {
+      console.log('[DraggableWidget] suppressing click (was a drag)');
       e.stopPropagation();
-      e.preventDefault();
+      hasMovedBeyondThreshold.current = false;
     }
   }
 

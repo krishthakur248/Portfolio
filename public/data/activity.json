@@ -1,26 +1,11 @@
 {
-  "updatedAt": "2026-11-18T16:05:31.524Z",
+  "updatedAt": "2026-11-21T16:00:36.229Z",
   "github": {
-    "total": 247,
+    "total": 248,
     "activeDays": 90,
     "maxStreak": 5,
-    "currentStreak": 1,
+    "currentStreak": 0,
     "days": [
-      {
-        "date": "2025-11-19",
-        "count": 0,
-        "level": 0
-      },
-      {
-        "date": "2025-11-20",
-        "count": 0,
-        "level": 0
-      },
-      {
-        "date": "2025-11-21",
-        "count": 1,
-        "level": 1
-      },
       {
         "date": "2025-11-22",
         "count": 0,
@@ -1828,28 +1813,33 @@
       },
       {
         "date": "2026-11-18",
+        "count": 2,
+        "level": 1
+      },
+      {
+        "date": "2026-11-19",
+        "count": 0,
+        "level": 0
+      },
+      {
+        "date": "2026-11-20",
+        "count": 0,
+        "level": 0
+      },
+      {
+        "date": "2026-11-21",
         "count": 0,
         "level": 0
       }
     ]
   },
   "leetcode": {
-    "total": 785,
-    "activeDays": 203,
+    "total": 782,
+    "activeDays": 202,
     "maxStreak": 19,
-    "currentStreak": 3,
-    "totalSolved": 600,
+    "currentStreak": 0,
+    "totalSolved": 601,
     "days": [
-      {
-        "date": "2025-11-19",
-        "count": 1,
-        "level": 1
-      },
-      {
-        "date": "2025-11-20",
-        "count": 3,
-        "level": 2
-      },
       {
         "date": "2025-11-29",
         "count": 3,
@@ -2852,6 +2842,11 @@
       },
       {
         "date": "2026-11-18",
+        "count": 1,
+        "level": 1
+      },
+      {
+        "date": "2026-11-19",
         "count": 1,
         "level": 1
       }
