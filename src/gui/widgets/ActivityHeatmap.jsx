@@ -53,12 +53,11 @@ function buildWeeks(days) {
     if (map.has(dateStr)) {
       // Real data day (may have count=0 for GitHub which includes all days)
       week.push(map.get(dateStr));
-    } else if (dateStr < firstStr) {
-      // Before the data range starts → true padding cell (invisible, week-align only)
+    } else if (dateStr < firstStr || dateStr > todayStr) {
+      // Before data range starts, OR in the future (padding for week alignment) → invisible
       week.push({ date: dateStr, count: 0, level: 0, _pad: true });
     } else {
-      // Inside data range but missing from API, OR after last submission up to today
-      // → show as an empty level-0 cell so the grid always reaches today
+      // Inside data range but missing from API (zero-activity day) → visible empty cell
       week.push({ date: dateStr, count: 0, level: 0 });
     }
     if (cur.getDay() === 6) {
