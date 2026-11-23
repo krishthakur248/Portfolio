@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-23T14:52:01.843Z",
+  "updatedAt": "2026-11-23T11:04:19.837Z",
   "github": {
     "total": 259,
     "activeDays": 92,
@@ -1834,11 +1834,11 @@
     ]
   },
   "leetcode": {
-    "total": 786,
-    "activeDays": 205,
+    "total": 784,
+    "activeDays": 204,
     "maxStreak": 19,
-    "currentStreak": 3,
-    "totalSolved": 603,
+    "currentStreak": 2,
+    "totalSolved": 602,
     "days": [
       {
         "date": "2025-11-29",
@@ -2858,11 +2858,6 @@
       {
         "date": "2026-11-22",
         "count": 1,
-        "level": 1
-      },
-      {
-        "date": "2026-11-23",
-        "count": 2,
         "level": 1
       }
     ]
