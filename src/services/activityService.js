@@ -1,9 +1,11 @@
 /**
  * activityService.js
  *
- * getActivity()     — reads static /data/activity.json (updated by GitHub Actions daily)
- * refreshActivity() — in DEV: triggers Vite middleware to re-run the Node fetch script
- *                     in PROD: fetches GitHub + LeetCode APIs directly from the browser
+ * getActivity()     — reads static /data/activity.json (cold-start cache, updated by GitHub Actions daily)
+ * refreshActivity() — always fetches GitHub + LeetCode APIs directly from the browser (both DEV and PROD)
+ *
+ * Both DEV and PROD use live browser-side API calls so activity.json is never written
+ * locally, eliminating merge conflicts between local dev and GitHub Actions commits.
  */
 
 const BASE = import.meta.env.BASE_URL ?? '/';
@@ -15,6 +17,28 @@ const LEETCODE_USER = 'krishthakur248';
 /** In-memory cache */
 let _cache   = null;
 let _promise = null;
+
+/**
+ * Auto-refresh promise — created once per page load.
+ * Both heatmaps share this same promise so only ONE API fetch happens on mount,
+ * not two parallel fetches. Resets on every page load/refresh automatically
+ * since it's a module-level variable (not persisted to storage).
+ */
+let _autoRefreshPromise = null;
+
+/**
+ * Called by heatmaps on mount. Triggers refreshActivity() once per page load
+ * (shared across both GitHub and LeetCode widgets). Same code path in DEV and PROD —
+ * both fetch live APIs from the browser. activity.json is only a cold-start fallback.
+ */
+export function getInitialActivity() {
+  // Auto-refresh from live APIs once per page load, shared across both widgets
+  if (!_autoRefreshPromise) {
+    console.log('[activityService] Auto-refresh triggered on page load...');
+    _autoRefreshPromise = refreshActivity();
+  }
+  return _autoRefreshPromise;
+}
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -131,17 +155,17 @@ async function tryAlfaApi() {
     fetch(`${base}/solved`,    { signal: AbortSignal.timeout(12000) }),
   ]);
 
-  let days = [];
-  if (calRes.ok) {
-    const d = await calRes.json();
-    const raw = d?.submissionCalendar ?? d?.calendar;
-    days = parseLC(raw);
-  }
+  // Throw on rate-limit or server error so the caller's catch triggers the fallback
+  if (!calRes.ok) throw new Error(`alfa-api calendar HTTP ${calRes.status}`);
+
+  const d = await calRes.json();
+  const raw = d?.submissionCalendar ?? d?.calendar;
+  const days = parseLC(raw);
 
   let totalSolved = null;
   if (solvedRes.ok) {
-    const d = await solvedRes.json();
-    totalSolved = d?.solvedProblem ?? d?.totalSolved ?? null;
+    const sd = await solvedRes.json();
+    totalSolved = sd?.solvedProblem ?? sd?.totalSolved ?? null;
   }
 
   return { days, totalSolved };
@@ -193,24 +217,28 @@ async function browserFetchLeetCode() {
 
   let days = [], totalSolved = null;
 
-  // Try alfa API first; fall back to corsproxy → LeetCode GraphQL
+  // Try alfa API first; fall back to corsproxy → LeetCode GraphQL (PROD only —
+  // corsproxy.io blocks localhost origins so we skip it in DEV to avoid console noise)
   try {
     const r = await tryAlfaApi();
     days = r.days; totalSolved = r.totalSolved;
     console.log('[browser] LeetCode: alfa-api ok, days=', days.length);
   } catch (e) {
-    console.warn('[browser] LeetCode alfa failed:', e.message, '— trying corsproxy...');
-    try {
-      const r = await tryCorsproxy();
-      days = r.days; totalSolved = r.totalSolved;
-      console.log('[browser] LeetCode: corsproxy ok, days=', days.length);
-    } catch (e2) {
-      console.error('[browser] LeetCode corsproxy also failed:', e2.message);
+    if (!import.meta.env.DEV) {
+      console.warn('[browser] LeetCode alfa failed:', e.message, '— trying corsproxy...');
+      try {
+        const r = await tryCorsproxy();
+        days = r.days; totalSolved = r.totalSolved;
+        console.log('[browser] LeetCode: corsproxy ok, days=', days.length);
+      } catch (e2) {
+        console.error('[browser] LeetCode corsproxy also failed:', e2.message);
+      }
+    } else {
+      console.warn('[browser] LeetCode alfa failed:', e.message, '— skipping corsproxy in DEV (blocked on localhost)');
     }
   }
 
   if (days.length === 0) throw new Error('LeetCode: no data from any source');
-
   // Dedupe by date and filter to rolling year
   const map = new Map();
   for (const d of days) map.set(d.date, d);
@@ -262,42 +290,41 @@ export function invalidateActivityCache() {
 export async function refreshActivity() {
   _cache = null; _promise = null;
 
-  // ── DEV: Vite middleware runs the Node fetch script ──────────────────────
-  if (import.meta.env.DEV) {
-    try {
-      console.log('[activityService] DEV: calling /api/refresh-activity...');
-      const r = await fetch('/api/refresh-activity', { method: 'POST' });
-      const j = await r.json();
-      console.log('[activityService] script result:', j);
-    } catch (e) {
-      console.warn('[activityService] /api/refresh-activity failed:', e.message);
-    }
-    // Re-read the freshly written file
-    try {
-      const raw    = await fetchStaticFile();
-      const result = { updatedAt: raw.updatedAt ?? null, github: wrap(raw.github,'GitHub'), leetcode: wrap(raw.leetcode,'LeetCode') };
-      _cache = result;
-      return result;
-    } catch { return getActivity(); }
-  }
-
-  // ── PROD: fetch APIs directly from the browser ───────────────────────────
-  console.log('[activityService] PROD: fetching APIs from browser...');
+  // Always fetch APIs directly from the browser (both DEV and PROD)
+  // activity.json is only a cold-start cache written by GitHub Actions — never written locally.
+  console.log('[activityService] Fetching live APIs from browser...');
   const [ghResult, lcResult] = await Promise.allSettled([
     browserFetchGitHub(),
     browserFetchLeetCode(),
   ]);
 
-  // If both failed, fall back to static file
+  // If GitHub also failed, fall back entirely to static file
   if (ghResult.status === 'rejected' && lcResult.status === 'rejected') {
     console.warn('[activityService] Both browser fetches failed, using static file');
     return getActivity();
   }
 
+  // If only LeetCode failed (e.g. 429 + CORS proxy blocked on localhost),
+  // fall back to cached activity.json data for LeetCode — keeps the widget working
+  // with yesterday's data instead of showing an error.
+  let lcData;
+  if (lcResult.status === 'fulfilled') {
+    lcData = wrap(lcResult.value, 'LeetCode');
+  } else {
+    console.warn('[activityService] LeetCode live fetch failed, using cached activity.json for LeetCode:', lcResult.reason?.message);
+    try {
+      const cached = await fetchStaticFile();
+      lcData = wrap(cached.leetcode, 'LeetCode');
+      console.log('[activityService] LeetCode: using cached data, days=', lcData?.data?.days?.length ?? 0);
+    } catch {
+      lcData = { status: 'error', reason: lcResult.reason?.message };
+    }
+  }
+
   const result = {
     updatedAt: new Date().toISOString(),
-    github:   ghResult.status === 'fulfilled' ? wrap(ghResult.value,  'GitHub')   : { status: 'error', reason: ghResult.reason?.message },
-    leetcode: lcResult.status === 'fulfilled' ? wrap(lcResult.value,  'LeetCode') : { status: 'error', reason: lcResult.reason?.message },
+    github:   ghResult.status === 'fulfilled' ? wrap(ghResult.value, 'GitHub') : { status: 'error', reason: ghResult.reason?.message },
+    leetcode: lcData,
   };
   _cache = result;
   return result;

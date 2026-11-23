@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { getActivity, refreshActivity } from '../../services/activityService.js';
+import { getActivity, getInitialActivity, refreshActivity } from '../../services/activityService.js';
 import styles from '../../styles/gui/ActivityHeatmap.module.css';
 
 /** How long ago was updatedAt? Returns a string like "3 hours ago" */
@@ -141,10 +141,10 @@ export default function ActivityHeatmap({ source, title, profileUrl, profileLabe
     }
   }, [source]);
 
-  // Initial load on mount
+  // Initial load on mount — in PROD auto-refreshes from live APIs on every page load
   useEffect(() => {
     setState('loading');
-    getActivity().then(applyActivity).catch(() => {
+    getInitialActivity().then(applyActivity).catch(() => {
       if (!mountedRef.current) return;
       setErrorMsg('Could not load activity data');
       setState('error');
