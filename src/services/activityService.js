@@ -19,6 +19,14 @@ let _cache   = null;
 let _promise = null;
 
 /**
+ * LeetCode rate-limit guard — remembers the last successful live fetch result
+ * so manual refresh clicks within 5 minutes reuse it instead of hammering the API.
+ */
+let _lcLastData    = null;
+let _lcLastFetchMs = 0;
+const LC_MIN_REFETCH_MS = 5 * 60 * 1000; // 5 minutes
+
+/**
  * Auto-refresh promise — created once per page load.
  * Both heatmaps share this same promise so only ONE API fetch happens on mount,
  * not two parallel fetches. Resets on every page load/refresh automatically
@@ -171,7 +179,27 @@ async function tryAlfaApi() {
   return { days, totalSolved };
 }
 
-/** Fetch LeetCode via corsproxy → leetcode.com GraphQL (fallback) */
+/**
+ * Fetch LeetCode via faisalshohag Vercel API — simple GET, good CORS headers,
+ * includes submissionCalendar. Used as second fallback when alfa-api is rate-limited.
+ */
+async function tryFaisalApi() {
+  const res = await fetch(
+    `https://leetcode-api-faisalshohag.vercel.app/${LEETCODE_USER}`,
+    { signal: AbortSignal.timeout(12000) }
+  );
+  if (!res.ok) throw new Error(`faisal-api HTTP ${res.status}`);
+  const d = await res.json();
+  if (d?.errors || d?.error) throw new Error('faisal-api returned error');
+
+  const days = parseLC(d?.submissionCalendar);
+  const totalSolved = d?.totalSolved ?? null;
+  if (days.length === 0) throw new Error('faisal-api: no calendar data');
+
+  return { days, totalSolved };
+}
+
+/** Fetch LeetCode via corsproxy → leetcode.com GraphQL (last-resort fallback) */
 async function tryCorsproxy() {
   const curYear  = new Date().getFullYear();
   const prevYear = curYear - 1;
@@ -183,7 +211,7 @@ async function tryCorsproxy() {
   const proxy = 'https://corsproxy.io/?url=https://leetcode.com/graphql';
   const opts = (year) => ({
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-cors-api-key': 'temp_' },
+    headers: { 'Content-Type': 'application/json' },
     body: q(year),
     signal: AbortSignal.timeout(15000),
   });
@@ -212,29 +240,45 @@ async function tryCorsproxy() {
 }
 
 async function browserFetchLeetCode() {
+  // ── Rate-limit guard ────────────────────────────────────────────────────────
+  // If we successfully fetched live LeetCode data less than 5 minutes ago,
+  // return it immediately — no API calls needed. Prevents 429s on rapid refreshes.
+  const now = Date.now();
+  if (_lcLastData && (now - _lcLastFetchMs) < LC_MIN_REFETCH_MS) {
+    console.log('[browser] LeetCode: reusing recent data (< 5 min old)');
+    return _lcLastData;
+  }
+
   const today   = new Date().toISOString().slice(0, 10);
   const yearAgo = new Date(Date.now() - 364 * 86400000).toISOString().slice(0, 10);
 
   let days = [], totalSolved = null;
 
-  // Try alfa API first; fall back to corsproxy → LeetCode GraphQL (PROD only —
-  // corsproxy.io blocks localhost origins so we skip it in DEV to avoid console noise)
+  // ── API chain: alfa → faisal → corsproxy ──────────────────────────────────
   try {
     const r = await tryAlfaApi();
     days = r.days; totalSolved = r.totalSolved;
     console.log('[browser] LeetCode: alfa-api ok, days=', days.length);
   } catch (e) {
-    if (!import.meta.env.DEV) {
-      console.warn('[browser] LeetCode alfa failed:', e.message, '— trying corsproxy...');
-      try {
-        const r = await tryCorsproxy();
-        days = r.days; totalSolved = r.totalSolved;
-        console.log('[browser] LeetCode: corsproxy ok, days=', days.length);
-      } catch (e2) {
-        console.error('[browser] LeetCode corsproxy also failed:', e2.message);
+    console.warn('[browser] LeetCode alfa failed:', e.message, '— trying faisal-api...');
+    try {
+      const r = await tryFaisalApi();
+      days = r.days; totalSolved = r.totalSolved;
+      console.log('[browser] LeetCode: faisal-api ok, days=', days.length);
+    } catch (e2) {
+      // corsproxy.io uses POST which triggers preflight — may be blocked on some origins
+      if (!import.meta.env.DEV) {
+        console.warn('[browser] LeetCode faisal-api failed:', e2.message, '— trying corsproxy...');
+        try {
+          const r = await tryCorsproxy();
+          days = r.days; totalSolved = r.totalSolved;
+          console.log('[browser] LeetCode: corsproxy ok, days=', days.length);
+        } catch (e3) {
+          console.error('[browser] LeetCode all APIs failed:', e3.message);
+        }
+      } else {
+        console.warn('[browser] LeetCode faisal-api failed:', e2.message, '— skipping corsproxy in DEV');
       }
-    } else {
-      console.warn('[browser] LeetCode alfa failed:', e.message, '— skipping corsproxy in DEV (blocked on localhost)');
     }
   }
 
@@ -252,7 +296,13 @@ async function browserFetchLeetCode() {
   const { maxStreak, currentStreak, activeDays } = computeStreaks(days365);
 
   console.log(`[browser] LeetCode: ${total} submissions, solved=${totalSolved}, streak ${currentStreak}`);
-  return { total, activeDays, maxStreak, currentStreak, totalSolved, days: daysWithLevel };
+  const result = { total, activeDays, maxStreak, currentStreak, totalSolved, days: daysWithLevel };
+
+  // Save for rate-limit guard — reused if refresh is clicked again within 5 minutes
+  _lcLastData    = result;
+  _lcLastFetchMs = Date.now();
+
+  return result;
 }
 
 // ─── Public API ───────────────────────────────────────────────────────────────
